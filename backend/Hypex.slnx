@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Hypex.Api/Hypex.Api.csproj" />
+    <Project Path="src/Hypex.Application/Hypex.Application.csproj" />
+    <Project Path="src/Hypex.Domain/Hypex.Domain.csproj" />
+    <Project Path="src/Hypex.Infrastructure/Hypex.Infrastructure.csproj" />
+  </Folder>
+</Solution>

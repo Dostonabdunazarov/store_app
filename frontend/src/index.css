@@ -1,0 +1,180 @@
+@import 'tailwindcss';
+
+/* Dark mode driven by data-theme="dark" on <html> */
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/*
+ * Hypex design tokens
+ * Primitives live in @theme; semantic tokens are bound to CSS vars so the theme can swap them.
+ * Tailwind v4 reads @theme to generate utilities (bg-surface, text-fg, rounded-lg, …).
+ */
+@theme {
+  /* Brand palette (indigo → violet accent) */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #818cf8;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;
+  --color-brand-700: #4338ca;
+  --color-brand-800: #3730a3;
+  --color-brand-900: #312e81;
+
+  /* Semantic tokens — bound to CSS vars so theme can swap them */
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-primary-hover: var(--primary-hover);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warning: var(--warning);
+
+  /* Radii */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  /* Typography */
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Space Grotesk', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
+  --shadow-elevated: 0 10px 30px -12px rgb(0 0 0 / 0.25);
+}
+
+/* Light theme (default) */
+:root,
+[data-theme='light'] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --fg: #0f172a;
+  --fg-muted: #475569;
+  --fg-subtle: #94a3b8;
+  /* Accent — deep emerald #004741 (buttons, links, active states, icon tints) */
+  --primary: #004741;
+  --primary-fg: #ffffff;
+  --primary-hover: #00332f;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #d97706;
+
+  /* Mesh gradient — soft emerald/teal blobs matching the accent. Light variant. */
+  --bg-mesh:
+    radial-gradient(42rem 42rem at 12% -8%, rgba(0, 71, 65, 0.14), transparent 60%),
+    radial-gradient(38rem 38rem at 88% 6%, rgba(13, 148, 136, 0.12), transparent 60%),
+    radial-gradient(46rem 46rem at 78% 92%, rgba(16, 185, 129, 0.12), transparent 62%),
+    radial-gradient(34rem 34rem at 8% 88%, rgba(45, 212, 191, 0.1), transparent 60%);
+  /* Glass surfaces (translucent so the mesh shows through under backdrop-blur). */
+  --glass: rgba(255, 255, 255, 0.6);
+  --glass-strong: rgba(255, 255, 255, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.5);
+}
+
+/* Dark theme — neutral charcoal base (#1D1D1D) */
+[data-theme='dark'] {
+  --bg: #1d1d1d;
+  --surface: #262626;
+  --surface-2: #303030;
+  --border: #3a3a3a;
+  --fg: #f4f4f5;
+  --fg-muted: #c4c4c8;
+  --fg-subtle: #8a8a90;
+  --primary: #818cf8;
+  --primary-fg: #17171a;
+  --primary-hover: #a5b4fc;
+  --success: #34d399;
+  --danger: #fb7185;
+  --warning: #fbbf24;
+
+  /* Mesh gradient — subtle cool blobs over the charcoal base. */
+  --bg-mesh:
+    radial-gradient(44rem 44rem at 12% -6%, rgba(99, 102, 241, 0.16), transparent 60%),
+    radial-gradient(40rem 40rem at 90% 4%, rgba(124, 58, 237, 0.14), transparent 60%),
+    radial-gradient(48rem 48rem at 82% 94%, rgba(56, 189, 248, 0.1), transparent 62%),
+    radial-gradient(36rem 36rem at 6% 90%, rgba(148, 163, 184, 0.08), transparent 60%);
+  /* Glass surfaces — cards lift slightly above the base; the navbar/footer
+   * (glass-strong) match the base #1D1D1D so header/footer read as one surface. */
+  --glass: rgba(38, 38, 38, 0.55);
+  --glass-strong: rgba(29, 29, 29, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.08);
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fixed, full-viewport mesh-gradient backdrop layered over the base bg color.
+ * A pseudo-element (rather than background on <body>) keeps it pinned during
+ * scroll and sits behind all content (z-index: -1). */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: var(--color-bg);
+  background-image: var(--bg-mesh);
+  background-repeat: no-repeat;
+}
+
+/* Headings use the display face for a more distinctive, modern look. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Glass surfaces — translucent + blurred so the page photo shows through.
+ * `.glass` for cards/tiles, `.glass-bar` for the sticky navbar/footer chrome. */
+.glass {
+  background-color: var(--glass);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border-color: var(--glass-border);
+}
+.glass-strong {
+  background-color: var(--glass-strong);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border-color: var(--glass-border);
+}
+/* Graceful fallback: if the browser can't blur, lean on the stronger tint. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-strong {
+    background-color: var(--glass-strong);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

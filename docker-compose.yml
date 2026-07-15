@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: hypex-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hypex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hypex_dev_pw}
+      POSTGRES_DB: ${POSTGRES_DB:-hypex}
+    ports:
+      - '${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - hypex-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-hypex} -d ${POSTGRES_DB:-hypex}']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  hypex-pgdata:

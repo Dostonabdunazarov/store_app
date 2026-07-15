@@ -1,0 +1,20 @@
+/** Central route path registry. Keep in sync with the router config. */
+export const paths = {
+  home: '/',
+  catalog: '/catalog',
+  product: (slug = ':slug') => `/product/${slug}`,
+  favorites: '/favorites',
+  compare: '/compare',
+  cart: '/cart',
+  checkout: '/checkout',
+  orders: '/orders',
+  order: (id = ':id') => `/orders/${id}`,
+  login: '/login',
+  register: '/register',
+  admin: '/admin',
+  adminOrders: '/admin/orders',
+  adminProducts: '/admin/products',
+  adminProductNew: '/admin/products/new',
+  adminProductEdit: (id = ':id') => `/admin/products/${id}/edit`,
+  adminCatalog: '/admin/catalog',
+} as const
