@@ -12,18 +12,32 @@ export interface HeroSlide {
   href: string
 }
 
-const AUTOPLAY_MS = 3500
+const AUTOPLAY_MS = 4500
 
 /** Position of a slide relative to the active one: center (big, straight),
- *  left / right (smaller, tilted "curved" side layers), or hidden. */
-type Slot = 'center' | 'left' | 'right' | 'hidden'
+ *  left / right (smaller, tilted "curved" side layers), or hidden (parked
+ *  off-stage on whichever side it's nearer to — kept mounted, just invisible). */
+type Slot = 'center' | 'left' | 'right' | 'hiddenLeft' | 'hiddenRight'
+
+interface SlotStyle {
+  x: string
+  rotateY: number
+  scale: number
+  z: number
+  opacity: number
+}
 
 /** Transform + styling per slot — the two side layers are scaled down,
- *  pushed outward, rotated on the Y axis and dimmed to read as "curved". */
-const SLOT_STYLES: Record<Exclude<Slot, 'hidden'>, { x: string; rotateY: number; scale: number; z: number; opacity: number; blur: number }> = {
-  left: { x: '-56%', rotateY: 38, scale: 0.82, z: 10, opacity: 0.75, blur: 1 },
-  center: { x: '0%', rotateY: 0, scale: 1, z: 30, opacity: 1, blur: 0 },
-  right: { x: '56%', rotateY: -38, scale: 0.82, z: 10, opacity: 0.75, blur: 1 },
+ *  pushed outward, rotated on the Y axis and dimmed to read as "curved".
+ *  Hidden slides sit further out and fully transparent; they stay mounted so
+ *  transitions animate smoothly (no remount flicker on mobile). No animated
+ *  blur — it's expensive on mobile GPUs and caused stutter mid-swipe. */
+const SLOT_STYLES: Record<Slot, SlotStyle> = {
+  left: { x: '-56%', rotateY: 38, scale: 0.82, z: 10, opacity: 0.75 },
+  center: { x: '0%', rotateY: 0, scale: 1, z: 30, opacity: 1 },
+  right: { x: '56%', rotateY: -38, scale: 0.82, z: 10, opacity: 0.75 },
+  hiddenLeft: { x: '-90%', rotateY: 45, scale: 0.7, z: 0, opacity: 0 },
+  hiddenRight: { x: '90%', rotateY: -45, scale: 0.7, z: 0, opacity: 0 },
 }
 
 /** 3-layer coverflow hero carousel: a large centered slide flanked by two
@@ -92,18 +106,23 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
 
   if (count === 0) return null
 
-  // Compute the slot for each slide relative to the active index.
+  // Compute the slot for each slide relative to the active index. Non-adjacent
+  // slides stay mounted (parked off-stage, transparent) on the side they're
+  // nearer to — so a transition animates in/out instead of remounting.
   const slotFor = (i: number): Slot => {
     if (i === index) return 'center'
     if (count > 1 && i === (index - 1 + count) % count) return 'left'
     if (count > 1 && i === (index + 1) % count) return 'right'
-    return 'hidden'
+    // Park on the shorter way round to the active slide.
+    const forward = (i - index + count) % count
+    const backward = (index - i + count) % count
+    return forward <= backward ? 'hiddenRight' : 'hiddenLeft'
   }
 
   return (
     <div
       className={cn(
-        'group relative h-[72vh] max-h-205 min-h-110 w-full touch-pan-y overflow-hidden',
+        'group relative h-[48vh] max-h-140 min-h-80 w-full touch-pan-y overflow-hidden',
         count > 1 && 'cursor-grab select-none active:cursor-grabbing',
       )}
       onMouseEnter={() => setPaused(true)}
@@ -119,23 +138,45 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       <div className="absolute inset-0 flex items-center justify-center transform-3d">
         {slides.map((s, i) => {
           const slot = slotFor(i)
-          if (slot === 'hidden') return null
           const st = SLOT_STYLES[slot]
           const isCenter = slot === 'center'
+          const isHidden = slot === 'hiddenLeft' || slot === 'hiddenRight'
           return (
             <motion.div
               key={s.id}
-              className="absolute h-full w-[68%] sm:w-[62%] lg:w-[56%]"
+              className={cn(
+                'absolute h-full w-[68%] sm:w-[62%] lg:w-[56%]',
+                // Parked slides must not intercept taps/clicks while invisible.
+                isHidden && 'pointer-events-none',
+              )}
               initial={false}
               animate={{
                 x: st.x,
                 rotateY: st.rotateY,
                 scale: st.scale,
                 opacity: st.opacity,
-                filter: `blur(${st.blur}px)`,
               }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              style={{ zIndex: st.z, transformStyle: 'preserve-3d' }}
+              // Visible slides (center/left/right) ease smoothly. Hidden slides
+              // are teleported instantly to their parked side with NO tween —
+              // otherwise the far slide that flips from one side to the other
+              // animates across the whole stage and flickers at the edge.
+              transition={
+                isHidden
+                  ? { duration: 0 }
+                  : { duration: 0.9, ease: [0.16, 1, 0.3, 1] }
+              }
+              style={{
+                zIndex: st.z,
+                transformStyle: 'preserve-3d',
+                // Only promote visible slides to their own GPU layer; keeping
+                // parked/transparent ones off will-change avoids edge flicker.
+                willChange: isHidden ? 'auto' : 'transform, opacity',
+                // Take parked slides out of compositing entirely so their
+                // transparent, similarly-rotated layer can't shimmer through
+                // the right/left visible slide's edge.
+                visibility: isHidden ? 'hidden' : 'visible',
+              }}
+              aria-hidden={isHidden}
             >
               {isCenter ? (
                 <Link
@@ -148,6 +189,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     src={s.imageUrl}
                     alt={s.name}
                     draggable={false}
+                    eager
                     className="h-full w-full"
                   />
                   {/* Caption gradient */}
@@ -159,9 +201,12 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 </Link>
               ) : (
                 // Side layers are decorative — click advances toward them.
+                // (Parked/hidden slides are pointer-events-none, so only the
+                // visible left/right layers are actually clickable.)
                 <button
                   type="button"
-                  onClick={() => go(slot === 'left' ? index - 1 : index + 1)}
+                  onClick={() => go(slot === 'left' || slot === 'hiddenLeft' ? index - 1 : index + 1)}
+                  tabIndex={isHidden ? -1 : 0}
                   aria-label={s.name}
                   className="block h-full w-full overflow-hidden rounded-2xl shadow-card ring-1 ring-white/10"
                 >
@@ -169,6 +214,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                     src={s.imageUrl}
                     alt={s.name}
                     draggable={false}
+                    eager
                     className="h-full w-full"
                   />
                   <div className="pointer-events-none absolute inset-0 bg-black/10" />

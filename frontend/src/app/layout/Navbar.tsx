@@ -57,11 +57,6 @@ export function Navbar() {
         <LayoutGrid className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.catalog')}
       </NavLink>
-      <NavLink to={paths.cart} className={linkClass} onClick={() => setMobileOpen(false)}>
-        <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
-        {t('nav.cart')}
-        {countBadge(cartCount)}
-      </NavLink>
       <NavLink to={paths.favorites} className={linkClass} onClick={() => setMobileOpen(false)}>
         <Heart className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.favorites')}
@@ -83,6 +78,11 @@ export function Navbar() {
           {t('nav.admin')}
         </NavLink>
       )}
+      <NavLink to={paths.cart} className={linkClass} onClick={() => setMobileOpen(false)}>
+        <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
+        {t('nav.cart')}
+        {countBadge(cartCount)}
+      </NavLink>
     </>
   )
 
@@ -95,8 +95,9 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav — icon + label items */}
-        <nav className="hidden items-center gap-5 md:flex lg:gap-6">
+        {/* Desktop nav — centered in the header row (absolute so its position
+            doesn't depend on the logo / actions widths) */}
+        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 md:flex lg:gap-6">
           {navLinks}
         </nav>
 

@@ -7,10 +7,13 @@ interface ProductImageProps {
   alt: string
   className?: string
   draggable?: boolean
+  /** Load immediately instead of lazily — use for above-the-fold images
+   *  (e.g. carousel slides) so they don't pop in / flicker on transition. */
+  eager?: boolean
 }
 
 /** Product image with a graceful placeholder for missing/broken URLs. */
-export function ProductImage({ src, alt, className, draggable }: ProductImageProps) {
+export function ProductImage({ src, alt, className, draggable, eager }: ProductImageProps) {
   const [failed, setFailed] = useState(false)
   const show = src && !failed
 
@@ -20,7 +23,7 @@ export function ProductImage({ src, alt, className, draggable }: ProductImagePro
         <img
           src={src}
           alt={alt}
-          loading="lazy"
+          loading={eager ? 'eager' : 'lazy'}
           draggable={draggable}
           onError={() => setFailed(true)}
           className="h-full w-full object-cover"
