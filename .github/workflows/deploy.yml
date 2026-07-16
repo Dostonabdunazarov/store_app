@@ -30,6 +30,8 @@ jobs:
             docker network inspect proxy >/dev/null 2>&1 || docker network create proxy
             # Сборка и запуск store_app (прод-оверлей: сеть proxy, Production).
             docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
-            # Перечитать Caddyfile (маршрут store.hypex.site живёт в corpdev/infra).
-            docker compose -f /root/corpdev/infra/docker-compose.yml exec -T caddy caddy reload --config /etc/caddy/Caddyfile
+            # RESTART, не reload: при пересборке контейнеры получают новый IP в сети
+            # `proxy`, а `caddy reload` не всегда сбрасывает пул соединений к старому
+            # апстриму → Content-Length: 0 → белый экран (грабля №2, corpdev/infra/README).
+            docker compose -f /root/corpdev/infra/docker-compose.yml restart caddy
             docker image prune -f
