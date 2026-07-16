@@ -4,19 +4,24 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'motion/react'
 import {
   Headphones,
+  Keyboard,
   Laptop,
   type LucideProps,
+  Monitor,
   Package,
   Smartphone,
   Tablet,
+  Tv,
   Watch,
 } from 'lucide-react'
 import { Container } from '@/shared/ui/Container'
 import { Button } from '@/shared/ui/Button'
 import { paths } from '@/app/routes/paths'
-import { useCategories, useProducts } from '@/features/catalog/hooks'
+import { useBrands, useCategories, useProducts } from '@/features/catalog/hooks'
 import { ProductCard } from '@/features/catalog/ProductCard'
 import { ProductCardSkeleton } from '@/features/catalog/ProductCardSkeleton'
+import { BrandStrip } from './BrandStrip'
+import { CATEGORY_IMAGES } from './categoryImages'
 import { HeroCarousel, type HeroSlide } from './HeroCarousel'
 import heroImage from '@/assets/hero.png'
 
@@ -35,11 +40,17 @@ const CATEGORY_ICONS: Record<string, Icon> = {
   phones: Smartphone,
   gadgets: Watch,
   headsets: Headphones,
+  smartwatches: Watch,
+  tvs: Tv,
+  monitors: Monitor,
+  peripherals: Keyboard,
+  accessories: Package,
 }
 
 export function HomePage() {
   const { t } = useTranslation()
   const { data: categories } = useCategories()
+  const { data: brands } = useBrands()
   const { data: featured, isLoading: featuredLoading } = useProducts({
     sort: 'rating',
     pageSize: 8,
@@ -68,9 +79,6 @@ export function HomePage() {
         className="flex flex-col gap-6 pt-8"
       >
         <div className="flex flex-col items-center gap-2 text-center">
-          <span className="rounded-full bg-primary/10 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-primary">
-            {t('home.heroBadge')}
-          </span>
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
             {t('home.newArrivals')}
           </h1>
@@ -78,29 +86,65 @@ export function HomePage() {
         <HeroCarousel slides={heroSlides} />
       </motion.section>
 
+      {/* Brand strip — scrollable logos below the carousel */}
+      {brands && brands.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
+        >
+          <Container>
+            <BrandStrip brands={brands} />
+          </Container>
+        </motion.section>
+      )}
+
       <Container className="flex flex-col gap-16">
         {/* Categories */}
         <motion.section id="categories" className="flex flex-col gap-6 scroll-mt-24" {...fadeUp}>
-          <div className="flex flex-col gap-1 text-center">
+          <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
               {t('home.browseCategories')}
             </h2>
-            <p className="text-fg-muted">{t('home.browseCategoriesSubtitle')}</p>
           </div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {categories?.map((c) => {
               const Icon = CATEGORY_ICONS[c.slug] ?? Package
+              const image = CATEGORY_IMAGES[c.slug]
               return (
                 <Link
                   key={c.id}
                   to={`${paths.catalog}?category=${c.slug}`}
-                  className="group glass flex flex-col items-center gap-3 rounded-xl border p-6 text-center shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
+                  className="group relative flex aspect-4/5 flex-col justify-end overflow-hidden rounded-2xl border border-border shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
                 >
-                  <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary/10 text-primary transition-transform group-hover:scale-110">
-                    <Icon className="h-7 w-7" strokeWidth={1.75} />
+                  {/* Background: photo or gradient fallback */}
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={c.name}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-linear-to-br from-primary/25 to-primary/5" />
+                  )}
+                  {/* Readability gradient */}
+                  <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/25 to-transparent" />
+
+                  {/* Icon badge */}
+                  <span className="absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-md transition-transform group-hover:scale-110">
+                    <Icon className="h-5 w-5" strokeWidth={1.75} />
                   </span>
-                  <span className="text-sm font-semibold group-hover:text-primary">{c.name}</span>
-                  <span className="text-xs text-fg-subtle">{c.productCount}</span>
+
+                  {/* Label */}
+                  <div className="relative z-10 flex flex-col gap-0.5 p-4">
+                    <span className="text-base font-semibold text-white drop-shadow-sm sm:text-lg">
+                      {c.name}
+                    </span>
+                    <span className="text-xs font-medium text-white/70">
+                      {t('home.categoryProducts', { count: c.productCount })}
+                    </span>
+                  </div>
                 </Link>
               )
             })}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'motion/react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -45,6 +45,51 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
     return () => clearInterval(id)
   }, [paused, count])
 
+  // Pointer swipe/drag: a horizontal drag past the threshold advances a slide.
+  // Pointer capture guarantees we keep receiving moves even as the pointer
+  // crosses child slides; we accumulate the delta from move events (the
+  // pointerup coordinate is unreliable under the stage's 3D transform).
+  const SWIPE_THRESHOLD = 50
+  const drag = useRef({ active: false, startX: 0, dx: 0, moved: false })
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (count <= 1) return
+    // Don't capture yet — a plain click must still reach the arrows / side slides.
+    // Capture only starts once the pointer actually moves (in onPointerMove).
+    drag.current = { active: true, startX: e.clientX, dx: 0, moved: false }
+  }
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current.active) return
+    drag.current.dx = e.clientX - drag.current.startX
+    if (!drag.current.moved && Math.abs(drag.current.dx) > 8) {
+      // Promote to a real drag: now capture the pointer so we keep getting moves
+      // even as it crosses child slides, and pause autoplay.
+      drag.current.moved = true
+      e.currentTarget.setPointerCapture(e.pointerId)
+      setPaused(true)
+    }
+  }
+  const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!drag.current.active) return
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId)
+    }
+    const { dx, moved } = drag.current
+    drag.current.active = false
+    if (!moved) return // it was a click, not a drag — let it through
+    if (dx <= -SWIPE_THRESHOLD) setIndex((i) => (i + 1) % count)
+    else if (dx >= SWIPE_THRESHOLD) setIndex((i) => (i - 1 + count) % count)
+  }
+
+  // Cancel a click that follows a real drag so it doesn't navigate the center link.
+  const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (drag.current.moved) {
+      e.preventDefault()
+      e.stopPropagation()
+      drag.current.moved = false
+    }
+  }
+
   if (count === 0) return null
 
   // Compute the slot for each slide relative to the active index.
@@ -57,9 +102,17 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
 
   return (
     <div
-      className="group relative h-[72vh] max-h-205 min-h-110 w-full overflow-hidden"
+      className={cn(
+        'group relative h-[72vh] max-h-205 min-h-110 w-full touch-pan-y overflow-hidden',
+        count > 1 && 'cursor-grab select-none active:cursor-grabbing',
+      )}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerUp}
+      onClickCapture={onClickCapture}
       style={{ perspective: '1600px' }}
     >
       {/* Stage: slides positioned in 3D around the center */}
@@ -88,9 +141,15 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                 <Link
                   to={s.href}
                   aria-label={s.name}
+                  draggable={false}
                   className="block h-full w-full overflow-hidden rounded-2xl shadow-elevated ring-1 ring-white/10"
                 >
-                  <ProductImage src={s.imageUrl} alt={s.name} className="h-full w-full" />
+                  <ProductImage
+                    src={s.imageUrl}
+                    alt={s.name}
+                    draggable={false}
+                    className="h-full w-full"
+                  />
                   {/* Caption gradient */}
                   <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 via-black/25 to-transparent px-4 pb-8 pt-16 sm:px-8 lg:px-12">
                     <span className="block text-lg font-semibold text-white drop-shadow sm:text-2xl">
@@ -106,7 +165,12 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
                   aria-label={s.name}
                   className="block h-full w-full overflow-hidden rounded-2xl shadow-card ring-1 ring-white/10"
                 >
-                  <ProductImage src={s.imageUrl} alt={s.name} className="h-full w-full" />
+                  <ProductImage
+                    src={s.imageUrl}
+                    alt={s.name}
+                    draggable={false}
+                    className="h-full w-full"
+                  />
                   <div className="pointer-events-none absolute inset-0 bg-black/10" />
                 </button>
               )}

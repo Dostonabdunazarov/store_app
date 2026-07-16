@@ -2,7 +2,16 @@ import { useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
-import { Menu, ShoppingCart, X } from 'lucide-react'
+import {
+  GitCompareArrows,
+  Heart,
+  LayoutGrid,
+  Menu,
+  Package,
+  Shield,
+  ShoppingCart,
+  X,
+} from 'lucide-react'
 import { useAuthStore } from '@/shared/store/auth.store'
 import { useCartStore, selectCartCount } from '@/shared/store/cart.store'
 import { useCompareStore, selectCompareCount } from '@/shared/store/compare.store'
@@ -13,8 +22,15 @@ import { cn } from '@/shared/lib/cn'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'text-sm font-medium transition-colors hover:text-fg',
+    'inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-fg',
     isActive ? 'text-fg' : 'text-fg-muted',
+  )
+
+const countBadge = (n: number) =>
+  n > 0 && (
+    <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-primary-fg">
+      {n}
+    </span>
   )
 
 export function Navbar() {
@@ -38,38 +54,32 @@ export function Navbar() {
   const navLinks = (
     <>
       <NavLink to={paths.catalog} className={linkClass} onClick={() => setMobileOpen(false)}>
+        <LayoutGrid className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.catalog')}
       </NavLink>
-      <NavLink
-        to={paths.cart}
-        className={(state) => cn(linkClass(state), 'sm:hidden')}
-        onClick={() => setMobileOpen(false)}
-      >
+      <NavLink to={paths.cart} className={linkClass} onClick={() => setMobileOpen(false)}>
+        <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.cart')}
-        {cartCount > 0 && (
-          <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-primary-fg">
-            {cartCount}
-          </span>
-        )}
+        {countBadge(cartCount)}
       </NavLink>
       <NavLink to={paths.favorites} className={linkClass} onClick={() => setMobileOpen(false)}>
+        <Heart className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.favorites')}
       </NavLink>
       <NavLink to={paths.compare} className={linkClass} onClick={() => setMobileOpen(false)}>
+        <GitCompareArrows className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.compare')}
-        {compareCount > 0 && (
-          <span className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-primary-fg">
-            {compareCount}
-          </span>
-        )}
+        {countBadge(compareCount)}
       </NavLink>
       {isAuthenticated && (
         <NavLink to={paths.orders} className={linkClass} onClick={() => setMobileOpen(false)}>
+          <Package className="h-4.5 w-4.5" strokeWidth={2} />
           {t('nav.orders')}
         </NavLink>
       )}
       {isAdmin && (
         <NavLink to={paths.admin} className={linkClass} onClick={() => setMobileOpen(false)}>
+          <Shield className="h-4.5 w-4.5" strokeWidth={2} />
           {t('nav.admin')}
         </NavLink>
       )}
@@ -85,24 +95,13 @@ export function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop nav — centered independent of the side clusters' widths */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-6 md:flex">
+        {/* Desktop nav — icon + label items */}
+        <nav className="hidden items-center gap-5 md:flex lg:gap-6">
           {navLinks}
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
           <LangSwitcher onChange={() => queryClient.invalidateQueries()} />
-
-          <Link to={paths.cart} className="relative hidden sm:block">
-            <Button variant="ghost" size="icon" aria-label={t('nav.cart')}>
-              <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
-            </Button>
-            {cartCount > 0 && (
-              <span className="pointer-events-none absolute -right-0.5 -top-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-semibold text-primary-fg">
-                {cartCount}
-              </span>
-            )}
-          </Link>
 
           {isAuthenticated ? (
             <div className="hidden items-center gap-2 sm:flex">

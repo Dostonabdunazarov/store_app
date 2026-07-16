@@ -13,7 +13,7 @@ internal record LocalizedText(string Ru, string Uz, string En)
 
 internal record CategorySeed(int Id, string Slug, LocalizedText Name);
 
-internal record BrandSeed(int Id, string Slug, string Name);
+internal record BrandSeed(int Id, string Slug, string Name, string? LogoUrl = null);
 
 /// <summary>An attribute row shared across languages: a stable key + a localized label + localized values.</summary>
 internal record AttributeSeed(string Key, LocalizedText Label, LocalizedText Value);

@@ -6,10 +6,11 @@ interface ProductImageProps {
   src: string | null | undefined
   alt: string
   className?: string
+  draggable?: boolean
 }
 
 /** Product image with a graceful placeholder for missing/broken URLs. */
-export function ProductImage({ src, alt, className }: ProductImageProps) {
+export function ProductImage({ src, alt, className, draggable }: ProductImageProps) {
   const [failed, setFailed] = useState(false)
   const show = src && !failed
 
@@ -20,6 +21,7 @@ export function ProductImage({ src, alt, className }: ProductImageProps) {
           src={src}
           alt={alt}
           loading="lazy"
+          draggable={draggable}
           onError={() => setFailed(true)}
           className="h-full w-full object-cover"
         />

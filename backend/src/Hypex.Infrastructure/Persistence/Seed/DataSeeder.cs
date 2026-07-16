@@ -25,7 +25,81 @@ public class DataSeeder(
         await SeedBrandsAsync(ct);
         await SeedProductsAsync(ct);
         await SyncProductImagesAsync(ct);
+        await SyncBrandLogosAsync(ct);
+        await SyncCategoriesAsync(ct);
         await SyncIdentitySequencesAsync(ct);
+    }
+
+    /// <summary>
+    /// Insert any seed categories missing from an already-populated database
+    /// (matched by slug) and remove stray categories that carry no products and
+    /// aren't part of the seed. Lets the category list grow without a full re-seed.
+    /// Idempotent.
+    /// </summary>
+    private async Task SyncCategoriesAsync(CancellationToken ct)
+    {
+        var seedSlugs = SeedCatalog.Categories.Select(c => c.Slug).ToHashSet();
+
+        // Remove stray non-seed categories that have no products (e.g. leftover test
+        // data) FIRST and in their own save — a stray may occupy an Id our seed wants
+        // to reuse, so it must be gone before we insert with explicit Ids.
+        var strays = await db.Categories
+            .Where(c => !seedSlugs.Contains(c.Slug) && !c.Products.Any())
+            .ToListAsync(ct);
+        if (strays.Count > 0)
+        {
+            db.Categories.RemoveRange(strays);
+            await db.SaveChangesAsync(ct);
+        }
+
+        // Add missing seed categories.
+        var existing = await db.Categories.Select(c => c.Slug).ToListAsync(ct);
+        var added = 0;
+        foreach (var c in SeedCatalog.Categories)
+        {
+            if (existing.Contains(c.Slug))
+                continue;
+            var category = new Category { Id = c.Id, Slug = c.Slug };
+            foreach (var lang in Languages.All)
+                category.Translations.Add(new CategoryTranslation { Lang = lang, Name = c.Name.For(lang) });
+            db.Categories.Add(category);
+            added++;
+        }
+        if (added > 0)
+            await db.SaveChangesAsync(ct);
+
+        if (added > 0 || strays.Count > 0)
+            logger.LogInformation("Category sync: +{Added} added, -{Removed} stray removed", added, strays.Count);
+    }
+
+    /// <summary>
+    /// Realign each seeded brand's <see cref="Brand.LogoUrl"/> to the current seed
+    /// catalog (matched by slug). Lets logo-only updates in the seed take effect on an
+    /// already-populated database without a full re-seed. Idempotent: only brands whose
+    /// logo differs are touched.
+    /// </summary>
+    private async Task SyncBrandLogosAsync(CancellationToken ct)
+    {
+        var bySlug = SeedCatalog.Brands.ToDictionary(b => b.Slug, b => b.LogoUrl);
+        var brands = await db.Brands.ToListAsync(ct);
+
+        var updated = 0;
+        foreach (var brand in brands)
+        {
+            if (!bySlug.TryGetValue(brand.Slug, out var logoUrl))
+                continue;
+            if (brand.LogoUrl == logoUrl)
+                continue;
+
+            brand.LogoUrl = logoUrl;
+            updated++;
+        }
+
+        if (updated > 0)
+        {
+            await db.SaveChangesAsync(ct);
+            logger.LogInformation("Synced logos for {Count} brands", updated);
+        }
     }
 
     /// <summary>
@@ -117,7 +191,7 @@ public class DataSeeder(
             return;
 
         foreach (var b in SeedCatalog.Brands)
-            db.Brands.Add(new Brand { Id = b.Id, Slug = b.Slug, Name = b.Name });
+            db.Brands.Add(new Brand { Id = b.Id, Slug = b.Slug, Name = b.Name, LogoUrl = b.LogoUrl });
 
         await db.SaveChangesAsync(ct);
         logger.LogInformation("Seeded {Count} brands", SeedCatalog.Brands.Count);

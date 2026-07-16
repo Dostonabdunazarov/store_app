@@ -9,14 +9,24 @@ internal static partial class SeedCatalog
     public const int CatPhones = 3;
     public const int CatGadgets = 4;
     public const int CatHeadsets = 5;
+    public const int CatSmartwatches = 6;
+    public const int CatTvs = 7;
+    public const int CatMonitors = 8;
+    public const int CatPeripherals = 9;
+    public const int CatAccessories = 10;
 
     public static readonly IReadOnlyList<CategorySeed> Categories = new List<CategorySeed>
     {
-        new(CatLaptops, "laptops",  new("Ноутбуки",  "Noutbuklar",   "Laptops")),
-        new(CatTablets, "tablets",  new("Планшеты",  "Planshetlar",  "Tablets")),
-        new(CatPhones,  "phones",   new("Смартфоны", "Smartfonlar",  "Smartphones")),
-        new(CatGadgets, "gadgets",  new("Гаджеты",   "Gadjetlar",    "Gadgets")),
-        new(CatHeadsets,"headsets", new("Гарнитуры", "Garnituralar", "Headsets")),
+        new(CatLaptops,      "laptops",      new("Ноутбуки",       "Noutbuklar",       "Laptops")),
+        new(CatTablets,      "tablets",      new("Планшеты",       "Planshetlar",      "Tablets")),
+        new(CatPhones,       "phones",       new("Смартфоны",      "Smartfonlar",      "Smartphones")),
+        new(CatGadgets,      "gadgets",      new("Гаджеты",        "Gadjetlar",        "Gadgets")),
+        new(CatHeadsets,     "headsets",     new("Гарнитуры",      "Garnituralar",     "Headsets")),
+        new(CatSmartwatches, "smartwatches", new("Умные часы",     "Aqlli soatlar",    "Smart watches")),
+        new(CatTvs,          "tvs",          new("Телевизоры",     "Televizorlar",     "TVs")),
+        new(CatMonitors,     "monitors",     new("Мониторы",       "Monitorlar",       "Monitors")),
+        new(CatPeripherals,  "peripherals",  new("Клавиатуры и мыши", "Klaviatura va sichqonchalar", "Keyboards & mice")),
+        new(CatAccessories,  "accessories",  new("Аксессуары",     "Aksessuarlar",     "Accessories")),
     };
 
     // Stable brand ids referenced by products.
@@ -35,17 +45,18 @@ internal static partial class SeedCatalog
 
     public static readonly IReadOnlyList<BrandSeed> Brands = new List<BrandSeed>
     {
-        new(BrApple,    "apple",    "Apple"),
-        new(BrSamsung,  "samsung",  "Samsung"),
-        new(BrXiaomi,   "xiaomi",   "Xiaomi"),
-        new(BrSony,     "sony",     "Sony"),
-        new(BrAsus,     "asus",     "ASUS"),
-        new(BrLenovo,   "lenovo",   "Lenovo"),
-        new(BrDell,     "dell",     "Dell"),
-        new(BrHp,       "hp",       "HP"),
-        new(BrGoogle,   "google",   "Google"),
-        new(BrJbl,      "jbl",      "JBL"),
-        new(BrLogitech, "logitech", "Logitech"),
-        new(BrHuawei,   "huawei",   "Huawei"),
+        // Brand logos: Simple Icons monochrome SVGs via jsDelivr CDN (stable, version-pinned).
+        new(BrApple,    "apple",    "Apple",    "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/apple.svg"),
+        new(BrSamsung,  "samsung",  "Samsung",  "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/samsung.svg"),
+        new(BrXiaomi,   "xiaomi",   "Xiaomi",   "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/xiaomi.svg"),
+        new(BrSony,     "sony",     "Sony",     "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/sony.svg"),
+        new(BrAsus,     "asus",     "ASUS",     "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/asus.svg"),
+        new(BrLenovo,   "lenovo",   "Lenovo",   "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/lenovo.svg"),
+        new(BrDell,     "dell",     "Dell",     "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/dell.svg"),
+        new(BrHp,       "hp",       "HP",       "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/hp.svg"),
+        new(BrGoogle,   "google",   "Google",   "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/google.svg"),
+        new(BrJbl,      "jbl",      "JBL",      "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/jbl.svg"),
+        new(BrLogitech, "logitech", "Logitech", "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/logitech.svg"),
+        new(BrHuawei,   "huawei",   "Huawei",   "https://cdn.jsdelivr.net/npm/simple-icons@13/icons/huawei.svg"),
     };
 }
