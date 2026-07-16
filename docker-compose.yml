@@ -1,3 +1,12 @@
+# Базовый compose — локальная разработка и основа для прод-оверлея.
+#
+# Порты наружу привязаны к 127.0.0.1 намеренно: списки портов в Compose нельзя
+# «очистить» оверлеем (ports: [] не убирает базовые), поэтому на проде они
+# остаются, но торчат только в loopback — снаружи недоступны. Наружу смотрит
+# лишь общий Caddy (corpdev/infra), который ходит к контейнерам по сети `proxy`.
+#
+# На сервере поверх накладывается docker-compose.prod.yml (см. DEPLOY.md):
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
 services:
   postgres:
     image: postgres:17-alpine
@@ -8,7 +17,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hypex_dev_pw}
       POSTGRES_DB: ${POSTGRES_DB:-hypex}
     ports:
-      - '${POSTGRES_PORT:-5432}:5432'
+      - '127.0.0.1:${POSTGRES_PORT:-5440}:5432'
     volumes:
       - hypex-pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -16,6 +25,34 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  backend:
+    build: ./backend
+    container_name: hypex-backend
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-hypex};Username=${POSTGRES_USER:-hypex};Password=${POSTGRES_PASSWORD:-hypex_dev_pw}"
+      Jwt__Key: ${JWT_KEY:-dev-only-super-secret-key-change-me-32chars-min}
+      Jwt__Issuer: "Hypex"
+      Jwt__Audience: "HypexClient"
+      # Разрешённые origins для CORS. В проде переопределяется оверлеем.
+      Cors__AllowedOrigins__0: ${CORS_ALLOWED_ORIGIN:-http://localhost:5173}
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ASPNETCORE_URLS: "http://+:8080"
+    ports:
+      - '127.0.0.1:5080:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    container_name: hypex-frontend
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:3010:80'
+    depends_on:
+      - backend
 
 volumes:
   hypex-pgdata:

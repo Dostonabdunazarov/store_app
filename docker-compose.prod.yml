@@ -1,0 +1,41 @@
+# Прод-оверлей для store.hypex.site. Накладывается поверх docker-compose.yml:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Что делает:
+#  • подключает backend и frontend к внешней сети `proxy` (там же живёт Caddy);
+#  • переводит backend в Production и настраивает CORS/секреты из .env;
+#  • имена контейнеров = цели reverse_proxy в corpdev/infra/Caddyfile.
+#
+# Публичные порты из базового compose привязаны к 127.0.0.1 — снаружи недоступны.
+# Наружу торчит только Caddy из corpdev/infra; он маршрутизирует:
+#   /api/* → store-backend:8080, всё остальное → store-frontend:80.
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+  backend:
+    image: store-backend:latest
+    container_name: store-backend
+    environment:
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-hypex};Username=${POSTGRES_USER:-hypex};Password=${POSTGRES_PASSWORD}"
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: "Hypex"
+      Jwt__Audience: "HypexClient"
+      Cors__AllowedOrigins__0: ${CORS_ALLOWED_ORIGIN:-https://store.hypex.site}
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ASPNETCORE_URLS: "http://+:8080"
+    networks:
+      - default
+      - proxy
+
+  frontend:
+    image: store-frontend:latest
+    container_name: store-frontend
+    networks:
+      - default
+      - proxy
+
+networks:
+  proxy:
+    external: true
