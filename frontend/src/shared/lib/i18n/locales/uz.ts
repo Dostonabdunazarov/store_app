@@ -18,6 +18,7 @@ export const uz: Translation = {
   },
   nav: {
     catalog: 'Katalog',
+    about: 'Biz haqimizda',
     favorites: 'Saralanganlar',
     compare: 'Taqqoslash',
     cart: 'Savat',
@@ -27,6 +28,9 @@ export const uz: Translation = {
     logout: 'Chiqish',
     admin: 'Admin panel',
     account: 'Hisob',
+    searchPlaceholder: 'Mahsulotlarni qidirish…',
+    searchNoResults: 'Hech narsa topilmadi',
+    searchViewAll: 'Barcha natijalarni ko‘rish',
   },
   theme: {
     toggle: "Mavzuni almashtirish",
@@ -64,6 +68,7 @@ export const uz: Translation = {
     newProductsSubtitle: 'Katalogdagi yangi tushumlar',
     browseCategories: 'Kategoriyalar',
     browseCategoriesSubtitle: 'Kerakli narsani toping',
+    brands: 'Mashhur brendlar',
     categoryProducts_one: '{{count}} mahsulot',
     categoryProducts_few: '{{count}} ta mahsulot',
     categoryProducts_many: '{{count}} ta mahsulot',
@@ -230,5 +235,21 @@ export const uz: Translation = {
   footer: {
     tagline: 'Siz uchun ishlaydigan texnika.',
     rights: 'Barcha huquqlar himoyalangan.',
+    contactsTitle: 'Kontaktlar',
+    aboutTitle: 'Kompaniya',
+  },
+  about: {
+    title: 'Biz haqimizda',
+    lead: 'Hypex Store — texnika va elektronika do‘koni. Kerakli qurilmani tanlashda yordam beramiz va uni tez hamda kafolat bilan yetkazamiz.',
+    body: '2019-yildan buyon 50 000 dan ortiq mahsulot sotdik va butun mamlakat bo‘ylab o‘n minglab mijozlarga xizmat ko‘rsatdik. Assortimentimizda yetakchi brendlarning noutbuklari, smartfonlari, planshetlari, audio va aksessuarlari bor. Rasmiy kafolat, halol narxlar va uch tilda qo‘llab-quvvatlash taklif etamiz.',
+    contactsTitle: 'Kontaktlar',
+    addressLabel: 'Manzil',
+    address: 'Toshkent sh., Mirzo Ulug‘bek tumani, Mustaqillik ko‘chasi, 12',
+    phoneLabel: 'Telefon',
+    phone: '+998 71 200-10-10',
+    emailLabel: 'E-mail',
+    email: 'support@hypex.uz',
+    hoursLabel: 'Ish vaqti',
+    hours: 'Du–Yak: 9:00–21:00',
   },
 }

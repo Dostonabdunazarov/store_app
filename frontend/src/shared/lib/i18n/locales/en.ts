@@ -18,6 +18,7 @@ export const en: Translation = {
   },
   nav: {
     catalog: 'Catalog',
+    about: 'About',
     favorites: 'Favorites',
     compare: 'Compare',
     cart: 'Cart',
@@ -27,6 +28,9 @@ export const en: Translation = {
     logout: 'Sign out',
     admin: 'Admin',
     account: 'Account',
+    searchPlaceholder: 'Search products…',
+    searchNoResults: 'Nothing found',
+    searchViewAll: 'View all results',
   },
   theme: {
     toggle: 'Toggle theme',
@@ -64,6 +68,7 @@ export const en: Translation = {
     newProductsSubtitle: 'Fresh arrivals in the catalog',
     browseCategories: 'Categories',
     browseCategoriesSubtitle: 'Find exactly what you need',
+    brands: 'Popular brands',
     categoryProducts_one: '{{count}} product',
     categoryProducts_few: '{{count}} products',
     categoryProducts_many: '{{count}} products',
@@ -230,5 +235,21 @@ export const en: Translation = {
   footer: {
     tagline: 'Tech that works for you.',
     rights: 'All rights reserved.',
+    contactsTitle: 'Contacts',
+    aboutTitle: 'Company',
+  },
+  about: {
+    title: 'About us',
+    lead: 'Hypex Store is a consumer tech and electronics retailer. We help you pick the right device and deliver it fast, with a warranty.',
+    body: 'Since 2019 we have sold over 50,000 products and served tens of thousands of customers nationwide. Our range covers laptops, smartphones, tablets, audio and accessories from leading brands. We offer an official warranty, fair prices and support in three languages.',
+    contactsTitle: 'Contacts',
+    addressLabel: 'Address',
+    address: 'Tashkent, Mirzo-Ulugbek district, Mustakillik st. 12',
+    phoneLabel: 'Phone',
+    phone: '+998 71 200-10-10',
+    emailLabel: 'E-mail',
+    email: 'support@hypex.uz',
+    hoursLabel: 'Opening hours',
+    hours: 'Mon–Sun: 9:00–21:00',
   },
 }

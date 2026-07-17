@@ -3,9 +3,12 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
 import {
+  ChevronDown,
   GitCompareArrows,
   Heart,
+  Info,
   LayoutGrid,
+  LogOut,
   Menu,
   Package,
   Shield,
@@ -22,7 +25,7 @@ import { cn } from '@/shared/lib/cn'
 
 const linkClass = ({ isActive }: { isActive: boolean }) =>
   cn(
-    'inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-fg',
+    'inline-flex shrink-0 items-center gap-2 whitespace-nowrap text-sm font-medium transition-colors hover:text-fg',
     isActive ? 'text-fg' : 'text-fg-muted',
   )
 
@@ -72,43 +75,77 @@ export function Navbar() {
           {t('nav.orders')}
         </NavLink>
       )}
-      {isAdmin && (
-        <NavLink to={paths.admin} className={linkClass} onClick={() => setMobileOpen(false)}>
-          <Shield className="h-4.5 w-4.5" strokeWidth={2} />
-          {t('nav.admin')}
-        </NavLink>
-      )}
       <NavLink to={paths.cart} className={linkClass} onClick={() => setMobileOpen(false)}>
         <ShoppingCart className="h-4.5 w-4.5" strokeWidth={2} />
         {t('nav.cart')}
         {countBadge(cartCount)}
       </NavLink>
+      <NavLink to={paths.about} className={linkClass} onClick={() => setMobileOpen(false)}>
+        <Info className="h-4.5 w-4.5" strokeWidth={2} />
+        {t('nav.about')}
+      </NavLink>
     </>
   )
 
   return (
-    <header className="glass-strong sticky top-0 z-40 border-b">
-      <div className="relative mx-auto flex h-16 w-full max-w-7xl items-center gap-6 px-4 sm:px-6 lg:px-8">
-        <Link to={paths.home} className="flex items-center gap-2 font-bold tracking-tight">
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-4 sm:pt-4">
+      <div className="glass-strong relative mx-auto flex h-16 w-full max-w-7xl items-center gap-4 rounded-2xl border px-4 shadow-elevated sm:px-6 lg:px-8">
+        <Link to={paths.home} className="flex shrink-0 items-center gap-2 font-bold tracking-tight">
+          <img src="/favicon.svg" alt="" aria-hidden className="h-7 w-auto shrink-0" />
           <span className="bg-linear-to-r from-teal-500 to-emerald-700 bg-clip-text text-xl text-transparent">
             {t('common.appName')}
           </span>
         </Link>
 
-        {/* Desktop nav — centered in the header row (absolute so its position
-            doesn't depend on the logo / actions widths) */}
-        <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-5 md:flex lg:gap-6">
+        {/* Desktop nav — flows between logo and actions, centered, so it can
+            never overlap them no matter how many links are shown. */}
+        <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 md:flex lg:gap-5">
           {navLinks}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <LangSwitcher onChange={() => queryClient.invalidateQueries()} />
 
           {isAuthenticated ? (
-            <div className="hidden items-center gap-2 sm:flex">
-              <span className="max-w-[10ch] truncate text-sm text-fg-muted">{user?.fullName}</span>
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                {t('nav.logout')}
+            <div className="hidden items-center gap-1 sm:flex">
+              {/* User name — hovering reveals the account dropdown (admin link).
+                  The whole thing is still just a label when there's nothing to show. */}
+              <div className="group relative">
+                <span className="inline-flex cursor-default items-center gap-1 rounded-lg px-2 py-1.5 text-sm text-fg-muted transition-colors group-hover:text-fg">
+                  <span className="max-w-[12ch] truncate">{user?.fullName}</span>
+                  {isAdmin && (
+                    <ChevronDown
+                      className="h-4 w-4 transition-transform group-hover:rotate-180"
+                      strokeWidth={2}
+                    />
+                  )}
+                </span>
+                {isAdmin && (
+                  // Dropdown: hidden until the group is hovered/focused. The pt-2
+                  // keeps a hover bridge so the menu doesn't flicker on the gap.
+                  <div className="invisible absolute right-0 top-full pt-2 opacity-0 transition-opacity group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                    <div className="glass-strong min-w-44 overflow-hidden rounded-xl border py-1 shadow-elevated">
+                      <Link
+                        to={paths.admin}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                      >
+                        <Shield className="h-4 w-4" strokeWidth={2} />
+                        {t('nav.admin')}
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Compact logout icon button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleLogout}
+                aria-label={t('nav.logout')}
+                title={t('nav.logout')}
+              >
+                <LogOut className="h-5 w-5" strokeWidth={2} />
               </Button>
             </div>
           ) : (
@@ -137,9 +174,15 @@ export function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="glass-strong border-t md:hidden">
-          <nav className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-4">
+        <div className="glass-strong mx-auto mt-2 w-full max-w-7xl rounded-2xl border shadow-elevated md:hidden">
+          <nav className="flex w-full flex-col gap-4 px-4 py-4">
             {navLinks}
+            {isAdmin && (
+              <NavLink to={paths.admin} className={linkClass} onClick={() => setMobileOpen(false)}>
+                <Shield className="h-4.5 w-4.5" strokeWidth={2} />
+                {t('nav.admin')}
+              </NavLink>
+            )}
             <div className="flex items-center gap-2 pt-2">
               {isAuthenticated ? (
                 <Button variant="outline" size="sm" onClick={handleLogout} className="w-full">

@@ -1,6 +1,7 @@
 /** Central route path registry. Keep in sync with the router config. */
 export const paths = {
   home: '/',
+  about: '/about',
   catalog: '/catalog',
   product: (slug = ':slug') => `/product/${slug}`,
   favorites: '/favorites',

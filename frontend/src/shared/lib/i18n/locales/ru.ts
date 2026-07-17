@@ -16,6 +16,7 @@ export const ru = {
   },
   nav: {
     catalog: 'Каталог',
+    about: 'О нас',
     favorites: 'Избранное',
     compare: 'Сравнение',
     cart: 'Корзина',
@@ -25,6 +26,9 @@ export const ru = {
     logout: 'Выйти',
     admin: 'Админка',
     account: 'Аккаунт',
+    searchPlaceholder: 'Поиск по товарам…',
+    searchNoResults: 'Ничего не найдено',
+    searchViewAll: 'Показать все результаты',
   },
   theme: {
     toggle: 'Переключить тему',
@@ -62,6 +66,7 @@ export const ru = {
     newProductsSubtitle: 'Свежие поступления в каталоге',
     browseCategories: 'Категории',
     browseCategoriesSubtitle: 'Найдите то, что ищете',
+    brands: 'Популярные бренды',
     categoryProducts_one: '{{count}} товар',
     categoryProducts_few: '{{count}} товара',
     categoryProducts_many: '{{count}} товаров',
@@ -233,6 +238,22 @@ export const ru = {
   footer: {
     tagline: 'Техника, которая работает на вас.',
     rights: 'Все права защищены.',
+    contactsTitle: 'Контакты',
+    aboutTitle: 'Компания',
+  },
+  about: {
+    title: 'О нас',
+    lead: 'Hypex Store — магазин техники и электроники. Мы помогаем выбрать подходящее устройство и доставляем его быстро и с гарантией.',
+    body: 'С 2019 года мы продали более 50 000 товаров и обслужили десятки тысяч клиентов по всей стране. В нашем ассортименте — ноутбуки, смартфоны, планшеты, аудиотехника и аксессуары ведущих брендов. Мы даём официальную гарантию, честные цены и поддержку на трёх языках.',
+    contactsTitle: 'Контакты',
+    addressLabel: 'Адрес',
+    address: 'г. Ташкент, Мирзо-Улугбекский район, ул. Мустакиллик, 12',
+    phoneLabel: 'Телефон',
+    phone: '+998 71 200-10-10',
+    emailLabel: 'E-mail',
+    email: 'support@hypex.uz',
+    hoursLabel: 'Часы работы',
+    hours: 'Пн–Вс: 9:00–21:00',
   },
 }
 

@@ -14,6 +14,7 @@ import { CheckoutPage } from '@/features/checkout/CheckoutPage'
 import { OrdersPage } from '@/features/orders/OrdersPage'
 import { OrderDetailPage } from '@/features/orders/OrderDetailPage'
 import { NotFoundPage } from '@/features/misc/NotFoundPage'
+import { AboutPage } from '@/features/misc/AboutPage'
 import { AdminLayout } from '@/features/admin/AdminLayout'
 import { DashboardPage } from '@/features/admin/DashboardPage'
 import { AdminOrdersPage } from '@/features/admin/AdminOrdersPage'
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       { path: paths.home, element: <HomePage /> },
+      { path: paths.about, element: <AboutPage /> },
       { path: paths.login, element: <LoginPage /> },
       { path: paths.register, element: <RegisterPage /> },
 

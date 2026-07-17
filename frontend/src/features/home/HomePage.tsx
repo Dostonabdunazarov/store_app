@@ -16,14 +16,14 @@ import {
 } from 'lucide-react'
 import { Container } from '@/shared/ui/Container'
 import { Button } from '@/shared/ui/Button'
+import { HeaderSearch } from '@/shared/ui/HeaderSearch'
 import { paths } from '@/app/routes/paths'
 import { useBrands, useCategories, useProducts } from '@/features/catalog/hooks'
 import { ProductCard } from '@/features/catalog/ProductCard'
 import { ProductCardSkeleton } from '@/features/catalog/ProductCardSkeleton'
 import { BrandStrip } from './BrandStrip'
 import { CATEGORY_IMAGES } from './categoryImages'
-import { HeroCarousel, type HeroSlide } from './HeroCarousel'
-import heroImage from '@/assets/hero.png'
+import { PromoCarousel, type PromoCard } from './PromoCarousel'
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -62,31 +62,38 @@ export function HomePage() {
     page: 1,
   })
 
-  // Build carousel slides from top-rated products with images; fall back to the static hero art.
-  const slides: HeroSlide[] =
-    featured?.items
-      .filter((p) => p.imageUrl)
-      .slice(0, 5)
-      .map((p) => ({ id: p.id, name: p.name, imageUrl: p.imageUrl, href: paths.product(p.slug) })) ??
-    []
-  const heroSlides: HeroSlide[] =
-    slides.length > 0
-      ? slides
-      : [{ id: 'hero', name: t('common.appName'), imageUrl: heroImage, href: paths.catalog }]
+  // Build promo cards from newest + top-rated products with images (deduped).
+  const promoCards: PromoCard[] = Array.from(
+    new Map(
+      [...(newest?.items ?? []), ...(featured?.items ?? [])]
+        .filter((p) => p.imageUrl)
+        .map((p) => [
+          p.id,
+          { id: p.id, name: p.name, imageUrl: p.imageUrl, href: paths.product(p.slug) },
+        ]),
+    ).values(),
+  ).slice(0, 12)
 
   return (
     <div className="flex flex-col gap-16 pb-20">
-      {/* Hero — full-width product slider */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="pt-8"
-      >
-        <Container>
-          <HeroCarousel slides={heroSlides} />
-        </Container>
-      </motion.section>
+      {/* Search — home page only */}
+      <Container className="pt-6">
+        <HeaderSearch className="mx-auto w-full max-w-3xl" />
+      </Container>
+
+      {/* Hero — promo card row */}
+      {promoCards.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className="-mt-10"
+        >
+          <Container>
+            <PromoCarousel cards={promoCards} />
+          </Container>
+        </motion.section>
+      )}
 
       {/* Brand strip — scrollable logos below the carousel */}
       {brands && brands.length > 0 && (
@@ -95,7 +102,10 @@ export function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: 'easeOut', delay: 0.1 }}
         >
-          <Container>
+          <Container className="flex flex-col gap-6">
+            <h2 className="text-center text-2xl font-bold tracking-tight sm:text-3xl">
+              {t('home.brands')}
+            </h2>
             <BrandStrip brands={brands} />
           </Container>
         </motion.section>
@@ -156,12 +166,9 @@ export function HomePage() {
         {/* New products */}
         <motion.section className="flex flex-col gap-6" {...fadeUp}>
           <div className="flex items-end justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
-                {t('home.newProducts')}
-              </h2>
-              <p className="text-fg-muted">{t('home.newProductsSubtitle')}</p>
-            </div>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              {t('home.newProducts')}
+            </h2>
             <Link to={`${paths.catalog}?sort=newest`} className="shrink-0">
               <Button variant="ghost">{t('home.viewAll')} →</Button>
             </Link>
@@ -176,10 +183,7 @@ export function HomePage() {
         {/* Featured products */}
         <motion.section className="flex flex-col gap-6" {...fadeUp}>
           <div className="flex items-end justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t('home.featured')}</h2>
-              <p className="text-fg-muted">{t('home.featuredSubtitle')}</p>
-            </div>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">{t('home.featured')}</h2>
             <Link to={paths.catalog} className="shrink-0">
               <Button variant="ghost">{t('home.viewAll')} →</Button>
             </Link>
