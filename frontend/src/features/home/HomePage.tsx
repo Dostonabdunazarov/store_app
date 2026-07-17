@@ -76,14 +76,16 @@ export function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="flex flex-col gap-6 pt-8"
+        className="pt-8"
       >
-        <div className="flex flex-col items-center gap-2 text-center">
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            {t('home.newArrivals')}
-          </h1>
-        </div>
-        <HeroCarousel slides={heroSlides} />
+        <Container className="flex flex-col gap-6">
+          <div className="flex flex-col items-center gap-2 text-center">
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
+              {t('home.newArrivals')}
+            </h1>
+          </div>
+          <HeroCarousel slides={heroSlides} />
+        </Container>
       </motion.section>
 
       {/* Brand strip — scrollable logos below the carousel */}

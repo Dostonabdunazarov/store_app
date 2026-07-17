@@ -8,7 +8,7 @@ export function RootLayout() {
   useFavoritesSync() // push guest favorites to the server once, on sign-in
 
   return (
-    <div className="flex min-h-screen flex-col text-fg">
+    <div className="flex min-h-screen flex-col overflow-x-hidden text-fg">
       <Navbar />
       <main className="flex-1">
         <Outlet />
