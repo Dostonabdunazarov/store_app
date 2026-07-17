@@ -58,6 +58,8 @@ export const ru = {
     exploreCategories: 'Категории',
     featured: 'Популярные товары',
     featuredSubtitle: 'Отобрано по рейтингу покупателей',
+    newProducts: 'Новые товары',
+    newProductsSubtitle: 'Свежие поступления в каталоге',
     browseCategories: 'Категории',
     browseCategoriesSubtitle: 'Найдите то, что ищете',
     categoryProducts_one: '{{count}} товар',

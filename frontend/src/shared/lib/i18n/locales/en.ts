@@ -60,6 +60,8 @@ export const en: Translation = {
     exploreCategories: 'Categories',
     featured: 'Popular products',
     featuredSubtitle: 'Picked by customer rating',
+    newProducts: 'New products',
+    newProductsSubtitle: 'Fresh arrivals in the catalog',
     browseCategories: 'Categories',
     browseCategoriesSubtitle: 'Find exactly what you need',
     categoryProducts_one: '{{count}} product',

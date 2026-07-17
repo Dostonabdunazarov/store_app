@@ -56,6 +56,11 @@ export function HomePage() {
     pageSize: 8,
     page: 1,
   })
+  const { data: newest, isLoading: newestLoading } = useProducts({
+    sort: 'newest',
+    pageSize: 8,
+    page: 1,
+  })
 
   // Build carousel slides from top-rated products with images; fall back to the static hero art.
   const slides: HeroSlide[] =
@@ -71,19 +76,14 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col gap-16 pb-20">
-      {/* Hero — "New arrivals" heading + 3-layer carousel */}
+      {/* Hero — full-width product slider */}
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className="pt-8"
       >
-        <Container className="flex flex-col gap-6">
-          <div className="flex flex-col items-center gap-2 text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-              {t('home.newArrivals')}
-            </h1>
-          </div>
+        <Container>
           <HeroCarousel slides={heroSlides} />
         </Container>
       </motion.section>
@@ -150,6 +150,26 @@ export function HomePage() {
                 </Link>
               )
             })}
+          </div>
+        </motion.section>
+
+        {/* New products */}
+        <motion.section className="flex flex-col gap-6" {...fadeUp}>
+          <div className="flex items-end justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                {t('home.newProducts')}
+              </h2>
+              <p className="text-fg-muted">{t('home.newProductsSubtitle')}</p>
+            </div>
+            <Link to={`${paths.catalog}?sort=newest`} className="shrink-0">
+              <Button variant="ghost">{t('home.viewAll')} →</Button>
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-4">
+            {newestLoading
+              ? Array.from({ length: 8 }).map((_, i) => <ProductCardSkeleton key={i} />)
+              : newest?.items.map((p) => <ProductCard key={p.id} product={p} />)}
           </div>
         </motion.section>
 

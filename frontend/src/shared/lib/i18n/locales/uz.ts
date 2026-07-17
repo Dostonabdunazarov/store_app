@@ -60,6 +60,8 @@ export const uz: Translation = {
     exploreCategories: 'Kategoriyalar',
     featured: 'Ommabop mahsulotlar',
     featuredSubtitle: 'Xaridorlar reytingi bo‘yicha tanlangan',
+    newProducts: 'Yangi mahsulotlar',
+    newProductsSubtitle: 'Katalogdagi yangi tushumlar',
     browseCategories: 'Kategoriyalar',
     browseCategoriesSubtitle: 'Kerakli narsani toping',
     categoryProducts_one: '{{count}} mahsulot',
