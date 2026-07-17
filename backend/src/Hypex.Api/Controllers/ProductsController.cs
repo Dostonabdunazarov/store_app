@@ -40,3 +40,4 @@ public class BrandsController(ICatalogService catalog) : ControllerBase
     public async Task<ActionResult<IReadOnlyList<BrandDto>>> Get(CancellationToken ct)
         => Ok(await catalog.GetBrandsAsync(ct));
 }
+
