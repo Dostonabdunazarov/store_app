@@ -7,6 +7,7 @@ import { Card } from '@/shared/ui/Card'
 import { Badge } from '@/shared/ui/Badge'
 import { StarRating } from '@/shared/ui/StarRating'
 import { ProductImage } from '@/shared/ui/ProductImage'
+import { cn } from '@/shared/lib/cn'
 import { formatPrice } from '@/shared/lib/format'
 import { useCartStore } from '@/shared/store/cart.store'
 import { FavoriteButton } from '@/features/favorites/FavoriteButton'
@@ -37,11 +38,14 @@ export function ProductCard({ product }: { product: ProductListItemDto }) {
               alt={product.name}
               className="aspect-square"
             />
-            {!product.inStock && (
-              <Badge tone="danger" className="absolute left-3 top-3">
-                {t('product.outOfStock')}
-              </Badge>
-            )}
+            <div className="absolute left-3 top-3 flex flex-col items-start gap-2">
+              {!product.inStock && (
+                <Badge tone="danger">{t('product.outOfStock')}</Badge>
+              )}
+              {product.discountPercent > 0 && (
+                <Badge tone="success">−{product.discountPercent}%</Badge>
+              )}
+            </div>
             <div className="absolute right-3 top-3 flex flex-col gap-2">
               <FavoriteButton product={product} />
               <CompareButton slug={product.slug} />
@@ -64,9 +68,21 @@ export function ProductCard({ product }: { product: ProductListItemDto }) {
             )}
 
             <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-              <span className="text-lg font-bold text-fg">
-                {formatPrice(product.price, t('common.currency'))}
-              </span>
+              <div className="flex flex-col">
+                <span
+                  className={cn(
+                    'text-lg font-bold',
+                    product.discountPercent > 0 ? 'text-danger' : 'text-fg',
+                  )}
+                >
+                  {formatPrice(product.price, t('common.currency'))}
+                </span>
+                {product.oldPrice != null && (
+                  <span className="text-xs font-medium text-fg-subtle line-through">
+                    {formatPrice(product.oldPrice, t('common.currency'))}
+                  </span>
+                )}
+              </div>
               {product.inStock && (
                 <button
                   type="button"

@@ -60,6 +60,10 @@ export interface ProductListItemDto {
   slug: string
   name: string
   price: number
+  /** Original pre-discount price; present only when the product is on sale. */
+  oldPrice: number | null
+  /** Rounded discount percentage (0 when not on sale). */
+  discountPercent: number
   stock: number
   inStock: boolean
   ratingAverage: number
@@ -81,6 +85,10 @@ export interface ProductDetailDto {
   name: string
   description: string
   price: number
+  /** Original pre-discount price; present only when the product is on sale. */
+  oldPrice: number | null
+  /** Rounded discount percentage (0 when not on sale). */
+  discountPercent: number
   stock: number
   inStock: boolean
   ratingAverage: number
@@ -107,7 +115,7 @@ export interface BrandDto {
   logoUrl: string | null
 }
 
-export type ProductSort = 'newest' | 'price_asc' | 'price_desc' | 'rating' | 'name'
+export type ProductSort = 'newest' | 'price_asc' | 'price_desc' | 'rating' | 'name' | 'discount'
 
 export interface ProductQuery {
   search?: string
@@ -116,6 +124,8 @@ export interface ProductQuery {
   minPrice?: number
   maxPrice?: number
   inStock?: boolean
+  /** When true, only products currently on sale are returned. */
+  onSale?: boolean
   sort?: ProductSort
   page?: number
   pageSize?: number
@@ -204,6 +214,7 @@ export interface AdminProductDto {
   id: string
   slug: string
   price: number
+  oldPrice: number | null
   stock: number
   categoryId: number
   brandId: number
@@ -221,6 +232,7 @@ export interface AdminProductDto {
 export interface ProductUpsertRequest {
   slug: string
   price: number
+  oldPrice?: number | null
   stock: number
   categoryId: number
   brandId: number

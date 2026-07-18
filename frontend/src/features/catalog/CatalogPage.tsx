@@ -15,7 +15,7 @@ import { FilterSidebar, type FilterValues } from './FilterSidebar'
 import type { ProductQuery, ProductSort } from '@/shared/api/types'
 
 const PAGE_SIZE = 12
-const SORTS: ProductSort[] = ['newest', 'price_asc', 'price_desc', 'rating', 'name']
+const SORTS: ProductSort[] = ['newest', 'price_asc', 'price_desc', 'rating', 'discount', 'name']
 
 /** Parse the URL search params into a typed ProductQuery. */
 function parseParams(sp: URLSearchParams): Required<Pick<ProductQuery, 'page' | 'pageSize'>> &
@@ -31,6 +31,7 @@ function parseParams(sp: URLSearchParams): Required<Pick<ProductQuery, 'page' | 
     minPrice: num('minPrice'),
     maxPrice: num('maxPrice'),
     inStock: sp.get('inStock') === 'true' || undefined,
+    onSale: sp.get('onSale') === 'true' || undefined,
     sort: (sp.get('sort') as ProductSort) || 'newest',
     page: num('page') ?? 1,
     pageSize: PAGE_SIZE,
@@ -69,6 +70,7 @@ export function CatalogPage() {
     minPrice: query.minPrice,
     maxPrice: query.maxPrice,
     inStock: query.inStock,
+    onSale: query.onSale,
   }
 
   const clearFilters = () => {

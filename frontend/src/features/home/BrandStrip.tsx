@@ -12,6 +12,9 @@ type BrandStripProps = {
 // Wide wordmark logos that should scale up (taller cap, less side padding).
 const WIDE_LOGOS = new Set(['samsung', 'sony', 'asus'])
 
+// Auto-scroll speed in pixels per second (content drifts right → left).
+const AUTO_SPEED = 40
+
 /**
  * Infinite, draggable strip of brand chips. The list is tripled and the scroll
  * position is kept in the middle copy; crossing a copy boundary silently wraps,
@@ -23,6 +26,8 @@ export function BrandStrip({ brands }: BrandStripProps) {
   const copyWidth = useRef(0)
   // Drag state (pointer). moved tracks whether it became a drag (to cancel the click).
   const drag = useRef({ active: false, startX: 0, startScroll: 0, moved: false })
+  // Whether auto-scroll is currently paused (hover / drag / tab hidden).
+  const paused = useRef(false)
 
   const measure = useCallback(() => {
     const el = scrollerRef.current
@@ -59,6 +64,28 @@ export function BrandStrip({ brands }: BrandStripProps) {
     }
   }, [measure, normalize, brands.length])
 
+  // Continuous auto-scroll so the logos visually travel right → left. Paused on
+  // hover/drag or when the tab is hidden; `normalize` wraps seamlessly.
+  useEffect(() => {
+    if (brands.length <= 1) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let raf = 0
+    let last = 0
+    const tick = (now: number) => {
+      const el = scrollerRef.current
+      if (el && !paused.current) {
+        const dt = last ? (now - last) / 1000 : 0
+        el.scrollLeft += AUTO_SPEED * dt
+        if (el.scrollLeft > copyWidth.current * 2) el.scrollLeft -= copyWidth.current
+      }
+      last = now
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [brands.length])
+
   const step = (dir: 1 | -1) => {
     const el = scrollerRef.current
     if (!el) return
@@ -69,6 +96,7 @@ export function BrandStrip({ brands }: BrandStripProps) {
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     const el = scrollerRef.current
     if (!el) return
+    paused.current = true // stop auto-scroll while the user interacts
     drag.current = { active: true, startX: e.clientX, startScroll: el.scrollLeft, moved: false }
     el.setPointerCapture(e.pointerId)
   }
@@ -83,6 +111,7 @@ export function BrandStrip({ brands }: BrandStripProps) {
     const el = scrollerRef.current
     if (el?.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId)
     drag.current.active = false
+    paused.current = false // resume auto-scroll
   }
   // Cancel the click that follows a drag, so dragging doesn't navigate.
   const onClickCapture = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -98,7 +127,11 @@ export function BrandStrip({ brands }: BrandStripProps) {
   const loop = [...brands, ...brands, ...brands]
 
   return (
-    <div className="relative">
+    <div
+      className="relative"
+      onMouseEnter={() => (paused.current = true)}
+      onMouseLeave={() => (paused.current = false)}
+    >
       <button
         type="button"
         aria-label="Scroll brands left"

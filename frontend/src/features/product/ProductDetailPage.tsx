@@ -107,10 +107,22 @@ export function ProductDetailPage() {
             )}
           </div>
 
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold">
+          <div className="flex flex-wrap items-center gap-3">
+            <span
+              className={
+                product.discountPercent > 0 ? 'text-3xl font-bold text-danger' : 'text-3xl font-bold'
+              }
+            >
               {formatPrice(product.price, t('common.currency'))}
             </span>
+            {product.oldPrice != null && (
+              <span className="text-lg font-medium text-fg-subtle line-through">
+                {formatPrice(product.oldPrice, t('common.currency'))}
+              </span>
+            )}
+            {product.discountPercent > 0 && (
+              <Badge tone="success">−{product.discountPercent}%</Badge>
+            )}
             <Badge tone={stockTone}>{stockLabel}</Badge>
           </div>
 

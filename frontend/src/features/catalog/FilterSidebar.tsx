@@ -10,6 +10,7 @@ export interface FilterValues {
   minPrice?: number
   maxPrice?: number
   inStock?: boolean
+  onSale?: boolean
 }
 
 interface FilterSidebarProps {
@@ -124,6 +125,18 @@ export function FilterSidebar({ values, onChange, onClear, className }: FilterSi
             className="h-4 w-4 rounded border-border accent-primary"
           />
           {t('catalog.inStockOnly')}
+        </label>
+      </Section>
+
+      <Section title={t('catalog.deals')}>
+        <label className="flex cursor-pointer items-center gap-2.5 text-sm text-fg-muted">
+          <input
+            type="checkbox"
+            checked={!!values.onSale}
+            onChange={(e) => onChange({ onSale: e.target.checked || undefined })}
+            className="h-4 w-4 rounded border-border accent-primary"
+          />
+          {t('catalog.onSaleOnly')}
         </label>
       </Section>
     </div>

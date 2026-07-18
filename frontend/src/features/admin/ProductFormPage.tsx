@@ -28,6 +28,7 @@ const LANGS = SUPPORTED_LANGS
 interface FormState {
   slug: string
   price: string
+  oldPrice: string
   stock: string
   categoryId: string
   brandId: string
@@ -58,6 +59,7 @@ export function ProductFormPage() {
   const [form, setForm] = useState<FormState>({
     slug: '',
     price: '',
+    oldPrice: '',
     stock: '0',
     categoryId: '',
     brandId: '',
@@ -81,6 +83,7 @@ export function ProductFormPage() {
     setForm({
       slug: p.slug,
       price: String(p.price),
+      oldPrice: p.oldPrice != null ? String(p.oldPrice) : '',
       stock: String(p.stock),
       categoryId: String(p.categoryId),
       brandId: String(p.brandId),
@@ -142,6 +145,7 @@ export function ProductFormPage() {
     return {
       slug: form.slug.trim(),
       price: Number(form.price) || 0,
+      oldPrice: form.oldPrice.trim() ? Number(form.oldPrice) || null : null,
       stock: Number(form.stock) || 0,
       categoryId: Number(form.categoryId) || 0,
       brandId: Number(form.brandId) || 0,
@@ -225,6 +229,16 @@ export function ProductFormPage() {
             value={form.price}
             error={errors.price}
             onChange={(e) => patch({ price: e.target.value })}
+          />
+          <Input
+            label={`${t('admin.oldPrice')} (${t('common.currency')})`}
+            type="number"
+            min={0}
+            step="0.01"
+            value={form.oldPrice}
+            error={errors.oldPrice}
+            hint={t('admin.oldPriceHint')}
+            onChange={(e) => patch({ oldPrice: e.target.value })}
           />
           <Input
             label={t('admin.stock')}
