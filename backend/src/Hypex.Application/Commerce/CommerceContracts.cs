@@ -22,13 +22,15 @@ public record ProductUpsertRequest(
     IReadOnlyList<string> ImageUrls,
     IReadOnlyList<ProductTranslationDto> Translations,
     IReadOnlyList<ProductAttributeInput> Attributes,
-    bool IsActive = true);
+    bool IsActive = true,
+    decimal? OldPrice = null);
 
 /// <summary>Full product view for the admin editor — all languages, all attributes, incl. inactive.</summary>
 public record AdminProductDto(
     Guid Id,
     string Slug,
     decimal Price,
+    decimal? OldPrice,
     int Stock,
     int CategoryId,
     int BrandId,

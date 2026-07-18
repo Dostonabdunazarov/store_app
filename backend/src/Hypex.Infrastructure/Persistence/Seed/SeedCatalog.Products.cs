@@ -78,7 +78,7 @@ internal static partial class SeedCatalog
                 new("gpu", new("Графика", "Grafika", "GPU"), new("NVIDIA GeForce RTX 4070", "NVIDIA GeForce RTX 4070", "NVIDIA GeForce RTX 4070")),
                 new("weight", new("Вес", "Vazn", "Weight"), new("1.5 кг", "1.5 kg", "1.5 kg")),
             },
-            4.7, 143),
+            4.7, 143, OldPrice: 2099.00m),
 
         new(
             "dell-xps-13-plus",
@@ -150,7 +150,7 @@ internal static partial class SeedCatalog
                 new("gpu", new("Графика", "Grafika", "GPU"), new("Intel Arc Graphics", "Intel Arc Graphics", "Intel Arc Graphics")),
                 new("weight", new("Вес", "Vazn", "Weight"), new("1.44 кг", "1.44 kg", "1.44 kg")),
             },
-            4.4, 67),
+            4.4, 67, OldPrice: 1799.00m),
 
         // ==================== TABLETS (Cat 2) ====================
         new(
@@ -224,7 +224,7 @@ internal static partial class SeedCatalog
                 new("battery", new("Батарея", "Batareya", "Battery"), new("8840 мА·ч", "8840 mA·soat", "8840 mAh")),
                 new("os", new("Операционная система", "Operatsion tizim", "OS"), new("Android", "Android", "Android")),
             },
-            4.5, 203),
+            4.5, 203, OldPrice: 429.00m),
 
         new(
             "huawei-matepad-pro-11",
@@ -324,7 +324,7 @@ internal static partial class SeedCatalog
                 new("battery", new("Батарея", "Batareya", "Battery"), new("3349 мА·ч", "3349 mA·soat", "3349 mAh")),
                 new("os", new("Операционная система", "Operatsion tizim", "OS"), new("iOS", "iOS", "iOS")),
             },
-            4.7, 401),
+            4.7, 401, OldPrice: 899.00m),
 
         new(
             "galaxy-s24-ultra",
@@ -375,7 +375,7 @@ internal static partial class SeedCatalog
                 new("battery", new("Батарея", "Batareya", "Battery"), new("4000 мА·ч", "4000 mA·soat", "4000 mAh")),
                 new("os", new("Операционная система", "Operatsion tizim", "OS"), new("Android", "Android", "Android")),
             },
-            4.6, 289),
+            4.6, 289, OldPrice: 949.00m),
 
         new(
             "xiaomi-14-pro",
@@ -475,7 +475,7 @@ internal static partial class SeedCatalog
                 new("battery", new("Батарея", "Batareya", "Battery"), new("5100 мА·ч", "5100 mA·soat", "5100 mAh")),
                 new("os", new("Операционная система", "Operatsion tizim", "OS"), new("Android", "Android", "Android")),
             },
-            4.5, 342),
+            4.5, 342, OldPrice: 429.00m),
 
         // ==================== GADGETS (Cat 4) ====================
         new(
@@ -500,7 +500,7 @@ internal static partial class SeedCatalog
                 new("waterproof", new("Водозащита", "Suvdan himoya", "Water resistance"), new("50 метров", "50 metr", "50 meters")),
                 new("color", new("Цвет", "Rang", "Color"), new("Тёмная ночь", "Tungi qora", "Midnight")),
             },
-            4.7, 231),
+            4.7, 231, OldPrice: 449.00m),
 
         new(
             "samsung-galaxy-watch-6",
@@ -617,7 +617,7 @@ internal static partial class SeedCatalog
                 new("waterproof", new("Водозащита", "Suvdan himoya", "Water resistance"), new("IPX4", "IPX4", "IPX4")),
                 new("color", new("Цвет", "Rang", "Color"), new("Чёрный", "Qora", "Black")),
             },
-            4.6, 203),
+            4.6, 203, OldPrice: 349.00m),
 
         new(
             "huawei-band-9",
@@ -641,7 +641,7 @@ internal static partial class SeedCatalog
                 new("weight", new("Вес", "Vazn", "Weight"), new("14 г", "14 g", "14 g")),
                 new("color", new("Цвет", "Rang", "Color"), new("Чёрный", "Qora", "Black")),
             },
-            4.3, 312),
+            4.3, 312, OldPrice: 79.00m),
 
         // ==================== HEADSETS (Cat 5) ====================
         new(
@@ -667,7 +667,7 @@ internal static partial class SeedCatalog
                 new("weight", new("Вес", "Vazn", "Weight"), new("250 г", "250 g", "250 g")),
                 new("color", new("Цвет", "Rang", "Color"), new("Чёрный", "Qora", "Black")),
             },
-            4.8, 456),
+            4.8, 456, OldPrice: 479.00m),
 
         new(
             "airpods-pro-2-usb-c",
@@ -691,7 +691,7 @@ internal static partial class SeedCatalog
                 new("waterproof", new("Водозащита", "Suvdan himoya", "Water resistance"), new("IP54", "IP54", "IP54")),
                 new("color", new("Цвет", "Rang", "Color"), new("Белый", "Oq", "White")),
             },
-            4.7, 388),
+            4.7, 388, OldPrice: 279.00m),
 
         new(
             "jbl-tune-770nc",

@@ -25,6 +25,7 @@ public class DataSeeder(
         await SeedBrandsAsync(ct);
         await SeedProductsAsync(ct);
         await SyncProductImagesAsync(ct);
+        await SyncProductSalePricesAsync(ct);
         await SyncBrandLogosAsync(ct);
         await SyncCategoriesAsync(ct);
         await SyncIdentitySequencesAsync(ct);
@@ -133,6 +134,38 @@ public class DataSeeder(
     }
 
     /// <summary>
+    /// Realign each seeded product's <see cref="Product.OldPrice"/> (the pre-discount
+    /// price used to show sale/акции) to the current seed catalog (matched by slug).
+    /// Lets discounts be added, changed, or cleared in the seed and take effect on an
+    /// already-populated database without a full re-seed. Idempotent: only products
+    /// whose OldPrice differs are touched; the live Price, orders and reviews are left
+    /// untouched.
+    /// </summary>
+    private async Task SyncProductSalePricesAsync(CancellationToken ct)
+    {
+        var bySlug = SeedCatalog.Products.ToDictionary(p => p.Slug, p => p.OldPrice);
+        var products = await db.Products.ToListAsync(ct);
+
+        var updated = 0;
+        foreach (var product in products)
+        {
+            if (!bySlug.TryGetValue(product.Slug, out var oldPrice))
+                continue;
+            if (product.OldPrice == oldPrice)
+                continue;
+
+            product.OldPrice = oldPrice;
+            updated++;
+        }
+
+        if (updated > 0)
+        {
+            await db.SaveChangesAsync(ct);
+            logger.LogInformation("Synced sale prices for {Count} products", updated);
+        }
+    }
+
+    /// <summary>
     /// The category/brand seed inserts explicit int Ids, which does not advance the
     /// Postgres identity sequence. Realign each sequence to MAX(id) so later
     /// EF-generated inserts (admin CRUD) don't collide with seeded rows.
@@ -210,6 +243,7 @@ public class DataSeeder(
                 CategoryId = p.CategoryId,
                 BrandId = p.BrandId,
                 Price = p.Price,
+                OldPrice = p.OldPrice,
                 Stock = p.Stock,
                 ImageUrls = p.ImageUrls.ToList(),
                 RatingAverage = p.RatingAverage,

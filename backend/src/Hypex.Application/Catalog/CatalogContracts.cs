@@ -16,7 +16,10 @@ public class ProductQuery
     public decimal? MaxPrice { get; set; }
     public bool? InStock { get; set; }
 
-    /// <summary>Sort key: "newest" (default), "price_asc", "price_desc", "rating", "name".</summary>
+    /// <summary>When true, only products currently on sale (with a discount) are returned.</summary>
+    public bool? OnSale { get; set; }
+
+    /// <summary>Sort key: "newest" (default), "price_asc", "price_desc", "rating", "name", "discount".</summary>
     public string? Sort { get; set; }
 
     public int Page { get; set; } = 1;
@@ -29,6 +32,8 @@ public record ProductListItemDto(
     string Slug,
     string Name,
     decimal Price,
+    decimal? OldPrice,
+    int DiscountPercent,
     int Stock,
     bool InStock,
     double RatingAverage,
@@ -46,6 +51,8 @@ public record ProductDetailDto(
     string Name,
     string Description,
     decimal Price,
+    decimal? OldPrice,
+    int DiscountPercent,
     int Stock,
     bool InStock,
     double RatingAverage,

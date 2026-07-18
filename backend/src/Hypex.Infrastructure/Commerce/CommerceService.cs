@@ -40,7 +40,7 @@ public class CommerceService(HypexDbContext db) : ICommerceService
     {
         await EnsureRefsAsync(r, ct);
         if (await db.Products.AnyAsync(p => p.Slug == r.Slug.Trim(), ct)) throw AppException.Conflict("A product with this slug already exists.");
-        var p = new Product { Slug = r.Slug.Trim(), Price = r.Price, Stock = r.Stock, CategoryId = r.CategoryId, BrandId = r.BrandId, ImageUrls = r.ImageUrls.ToList(), IsActive = r.IsActive };
+        var p = new Product { Slug = r.Slug.Trim(), Price = r.Price, OldPrice = r.OldPrice, Stock = r.Stock, CategoryId = r.CategoryId, BrandId = r.BrandId, ImageUrls = r.ImageUrls.ToList(), IsActive = r.IsActive };
         ApplyTranslations(p, r); ApplyAttributes(p, r);
         db.Products.Add(p); await db.SaveChangesAsync(ct);
         return (await GetAdminProductAsync(p.Id, ct))!;
@@ -54,7 +54,7 @@ public class CommerceService(HypexDbContext db) : ICommerceService
         if (p is null) return null;
         await EnsureRefsAsync(r, ct);
         if (await db.Products.AnyAsync(x => x.Slug == r.Slug.Trim() && x.Id != id, ct)) throw AppException.Conflict("A product with this slug already exists.");
-        p.Slug = r.Slug.Trim(); p.Price = r.Price; p.Stock = r.Stock; p.CategoryId = r.CategoryId; p.BrandId = r.BrandId; p.ImageUrls = r.ImageUrls.ToList(); p.IsActive = r.IsActive;
+        p.Slug = r.Slug.Trim(); p.Price = r.Price; p.OldPrice = r.OldPrice; p.Stock = r.Stock; p.CategoryId = r.CategoryId; p.BrandId = r.BrandId; p.ImageUrls = r.ImageUrls.ToList(); p.IsActive = r.IsActive;
         await db.ProductTranslations.Where(t => t.ProductId == id).ExecuteDeleteAsync(ct);
         await db.ProductAttributes.Where(a => a.ProductId == id).ExecuteDeleteAsync(ct);
         db.ProductTranslations.AddRange(r.Translations.Select(t => new ProductTranslation { ProductId = id, Lang = t.Lang, Name = t.Name.Trim(), Description = (t.Description ?? string.Empty).Trim() }));
@@ -71,7 +71,7 @@ public class CommerceService(HypexDbContext db) : ICommerceService
     }
     private static void ApplyTranslations(Product p, ProductUpsertRequest r) { foreach (var t in r.Translations) p.Translations.Add(new ProductTranslation { ProductId = p.Id, Lang = t.Lang, Name = t.Name.Trim(), Description = (t.Description ?? string.Empty).Trim() }); }
     private static void ApplyAttributes(Product p, ProductUpsertRequest r) { foreach (var a in r.Attributes) p.Attributes.Add(new ProductAttribute { ProductId = p.Id, Lang = a.Lang, Key = a.Key.Trim(), Label = a.Label.Trim(), Value = a.Value.Trim(), SortOrder = a.SortOrder }); }
-    private static AdminProductDto ToAdminDto(Product p) => new(p.Id, p.Slug, p.Price, p.Stock, p.CategoryId, p.BrandId, p.Category.Slug, p.Brand.Name, p.ImageUrls, p.RatingAverage, p.RatingCount, p.IsActive, p.CreatedAt, p.Translations.Select(t => new ProductTranslationDto(t.Lang, t.Name, t.Description)).ToList(), p.Attributes.OrderBy(a => a.SortOrder).Select(a => new ProductAttributeInput(a.Lang, a.Key, a.Label, a.Value, a.SortOrder)).ToList());
+    private static AdminProductDto ToAdminDto(Product p) => new(p.Id, p.Slug, p.Price, p.OldPrice, p.Stock, p.CategoryId, p.BrandId, p.Category.Slug, p.Brand.Name, p.ImageUrls, p.RatingAverage, p.RatingCount, p.IsActive, p.CreatedAt, p.Translations.Select(t => new ProductTranslationDto(t.Lang, t.Name, t.Description)).ToList(), p.Attributes.OrderBy(a => a.SortOrder).Select(a => new ProductAttributeInput(a.Lang, a.Key, a.Label, a.Value, a.SortOrder)).ToList());
     public async Task<AdminCategoryDto> CreateCategoryAsync(CategoryUpsertRequest r, CancellationToken ct = default) { var c = new Category { Slug = r.Slug.Trim() }; foreach (var n in r.Names) c.Translations.Add(new CategoryTranslation { Lang = n.Key, Name = n.Value.Trim() }); db.Categories.Add(c); await db.SaveChangesAsync(ct); return ToAdminCategoryDto(c); }
     public async Task<AdminBrandDto> CreateBrandAsync(BrandUpsertRequest r, CancellationToken ct = default) { var b = new Brand { Slug = r.Slug.Trim(), Name = r.Name.Trim(), LogoUrl = r.LogoUrl }; db.Brands.Add(b); await db.SaveChangesAsync(ct); return new AdminBrandDto(b.Id, b.Slug, b.Name, b.LogoUrl); }
     public async Task<AdminCategoryDto?> UpdateCategoryAsync(int id, CategoryUpsertRequest r, CancellationToken ct = default) { var c = await db.Categories.FirstOrDefaultAsync(x => x.Id == id, ct); if (c is null) return null; c.Slug = r.Slug.Trim(); await db.CategoryTranslations.Where(t => t.CategoryId == id).ExecuteDeleteAsync(ct); db.CategoryTranslations.AddRange(r.Names.Select(n => new CategoryTranslation { CategoryId = id, Lang = n.Key, Name = n.Value.Trim() })); await db.SaveChangesAsync(ct); return ToAdminCategoryDto(c, r.Names); }

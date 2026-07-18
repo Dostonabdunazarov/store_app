@@ -56,6 +56,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         b.HasIndex(p => p.Slug).IsUnique();
 
         b.Property(p => p.Price).HasColumnType("numeric(12,2)");
+        b.Property(p => p.OldPrice).HasColumnType("numeric(12,2)");
         b.Property(p => p.ImageUrls)
             .HasColumnType("jsonb");
 

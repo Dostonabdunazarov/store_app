@@ -8,6 +8,16 @@ public class Product
 
     /// <summary>Price in the store's base currency (USD), two decimals.</summary>
     public decimal Price { get; set; }
+
+    /// <summary>
+    /// Original (pre-discount) price. When set and greater than <see cref="Price"/>,
+    /// the product is on sale and the difference is shown as a discount.
+    /// </summary>
+    public decimal? OldPrice { get; set; }
+
+    /// <summary>True when the product carries an active discount.</summary>
+    public bool IsOnSale => OldPrice is { } old && old > Price;
+
     public int Stock { get; set; }
 
     public int CategoryId { get; set; }

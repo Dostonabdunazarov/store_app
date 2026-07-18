@@ -11,6 +11,7 @@ public class ProductUpsertRequestValidator : AbstractValidator<ProductUpsertRequ
     {
         RuleFor(x => x.Slug).NotEmpty().MaximumLength(160).Matches("^[a-z0-9]+(?:-[a-z0-9]+)*$").WithMessage("Slug must be lowercase letters, digits and single hyphens.");
         RuleFor(x => x.Price).GreaterThanOrEqualTo(0);
+        RuleFor(x => x.OldPrice).GreaterThan(x => x.Price).When(x => x.OldPrice.HasValue).WithMessage("Old price must be greater than the current price.");
         RuleFor(x => x.Stock).GreaterThanOrEqualTo(0);
         RuleFor(x => x.CategoryId).GreaterThan(0);
         RuleFor(x => x.BrandId).GreaterThan(0);

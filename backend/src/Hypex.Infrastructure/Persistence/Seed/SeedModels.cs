@@ -29,4 +29,5 @@ internal record ProductSeed(
     IReadOnlyList<string> ImageUrls,
     IReadOnlyList<AttributeSeed> Attributes,
     double RatingAverage = 0,
-    int RatingCount = 0);
+    int RatingCount = 0,
+    decimal? OldPrice = null);

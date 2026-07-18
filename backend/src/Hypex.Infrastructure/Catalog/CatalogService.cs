@@ -36,6 +36,9 @@ public class CatalogService(HypexDbContext db, ILanguageContext lang) : ICatalog
         if (q.InStock == true)
             query = query.Where(p => p.Stock > 0);
 
+        if (q.OnSale == true)
+            query = query.Where(p => p.OldPrice != null && p.OldPrice > p.Price);
+
         if (!string.IsNullOrWhiteSpace(q.Search))
         {
             var term = q.Search.Trim().ToLower();
@@ -50,6 +53,11 @@ public class CatalogService(HypexDbContext db, ILanguageContext lang) : ICatalog
             "price_asc" => query.OrderBy(p => p.Price),
             "price_desc" => query.OrderByDescending(p => p.Price),
             "rating" => query.OrderByDescending(p => p.RatingAverage).ThenByDescending(p => p.RatingCount),
+            "discount" => query
+                .OrderByDescending(p => p.OldPrice != null && p.OldPrice > p.Price
+                    ? (p.OldPrice.Value - p.Price) / p.OldPrice.Value
+                    : 0m)
+                .ThenByDescending(p => p.CreatedAt),
             "name" => query.OrderBy(p => p.Translations
                 .Where(t => t.Lang == Lang).Select(t => t.Name).FirstOrDefault()),
             _ => query.OrderByDescending(p => p.CreatedAt),
@@ -68,6 +76,10 @@ public class CatalogService(HypexDbContext db, ILanguageContext lang) : ICatalog
                     ?? p.Translations.Where(t => t.Lang == Fallback).Select(t => t.Name).FirstOrDefault()
                     ?? p.Slug,
                 p.Price,
+                p.OldPrice != null && p.OldPrice > p.Price ? p.OldPrice : null,
+                p.OldPrice != null && p.OldPrice > p.Price
+                    ? (int)Math.Round((p.OldPrice.Value - p.Price) / p.OldPrice.Value * 100)
+                    : 0,
                 p.Stock,
                 p.Stock > 0,
                 p.RatingAverage,
@@ -113,12 +125,19 @@ public class CatalogService(HypexDbContext db, ILanguageContext lang) : ICatalog
                 .ToList();
         }
 
+        var onSale = p.OldPrice is { } oldPrice && oldPrice > p.Price;
+        var discountPercent = onSale
+            ? (int)Math.Round((p.OldPrice!.Value - p.Price) / p.OldPrice.Value * 100)
+            : 0;
+
         return new ProductDetailDto(
             p.Id,
             p.Slug,
             tr?.Name ?? p.Slug,
             tr?.Description ?? string.Empty,
             p.Price,
+            onSale ? p.OldPrice : null,
+            discountPercent,
             p.Stock,
             p.Stock > 0,
             p.RatingAverage,
