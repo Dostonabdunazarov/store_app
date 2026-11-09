@@ -7,8 +7,6 @@ import { Card } from '@/shared/ui/Card'
 import { Badge } from '@/shared/ui/Badge'
 import { StarRating } from '@/shared/ui/StarRating'
 import { ProductImage } from '@/shared/ui/ProductImage'
-import { cn } from '@/shared/lib/cn'
-import { formatPrice } from '@/shared/lib/format'
 import { useCartStore } from '@/shared/store/cart.store'
 import { FavoriteButton } from '@/features/favorites/FavoriteButton'
 import { CompareButton } from '@/features/compare/CompareButton'
@@ -68,21 +66,7 @@ export function ProductCard({ product }: { product: ProductListItemDto }) {
             )}
 
             <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-              <div className="flex flex-col">
-                <span
-                  className={cn(
-                    'text-lg font-bold',
-                    product.discountPercent > 0 ? 'text-danger' : 'text-fg',
-                  )}
-                >
-                  {formatPrice(product.price, t('common.currency'))}
-                </span>
-                {product.oldPrice != null && (
-                  <span className="text-xs font-medium text-fg-subtle line-through">
-                    {formatPrice(product.oldPrice, t('common.currency'))}
-                  </span>
-                )}
-              </div>
+              <div />
               {product.inStock && (
                 <button
                   type="button"

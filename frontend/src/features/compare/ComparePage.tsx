@@ -8,7 +8,6 @@ import { Skeleton } from '@/shared/ui/Skeleton'
 import { StarRating } from '@/shared/ui/StarRating'
 import { ProductImage } from '@/shared/ui/ProductImage'
 import { paths } from '@/app/routes/paths'
-import { formatPrice } from '@/shared/lib/format'
 import { catalogApi } from '@/shared/api/endpoints'
 import { qk } from '@/shared/api/queryKeys'
 import { useCompareStore } from '@/shared/store/compare.store'
@@ -134,14 +133,6 @@ export function ComparePage() {
             </tr>
           </thead>
           <tbody>
-            <CompareRow label={t('catalog.price')}>
-              {products.map((p) => (
-                <td key={p.id} className="p-3 text-center font-bold">
-                  {formatPrice(p.price, t('common.currency'))}
-                </td>
-              ))}
-            </CompareRow>
-
             <CompareRow label={t('product.reviews')}>
               {products.map((p) => (
                 <td key={p.id} className="p-3">

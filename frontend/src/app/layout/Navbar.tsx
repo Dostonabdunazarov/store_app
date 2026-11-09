@@ -90,7 +90,7 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 px-3 pt-3 sm:px-4 sm:pt-4">
-      <div className="glass-strong relative mx-auto flex h-16 w-full max-w-7xl items-center gap-4 rounded-2xl border px-4 shadow-elevated sm:px-6 lg:px-8">
+      <div className="glass-strong relative mx-auto flex h-16 w-full max-w-[max(80rem,70%)] items-center gap-4 rounded-2xl border px-4 shadow-elevated sm:px-6 lg:px-8">
         <Link to={paths.home} className="flex shrink-0 items-center gap-2 font-bold tracking-tight">
           <img src="/favicon.svg" alt="" aria-hidden className="h-7 w-auto shrink-0" />
           <span className="bg-linear-to-r from-teal-500 to-emerald-700 bg-clip-text text-xl text-transparent">
@@ -186,7 +186,7 @@ export function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="glass-strong mx-auto mt-2 w-full max-w-7xl rounded-2xl border shadow-elevated md:hidden">
+        <div className="glass-strong mx-auto mt-2 w-full max-w-[max(80rem,70%)] rounded-2xl border shadow-elevated md:hidden">
           <nav className="flex w-full flex-col gap-4 px-4 py-4">
             {navLinks}
             {isAdmin && (

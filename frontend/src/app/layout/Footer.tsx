@@ -9,7 +9,7 @@ export function Footer() {
 
   return (
     <footer className="glass-strong mt-auto border-t">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto flex w-full max-w-[max(80rem,70%)] flex-col gap-8 px-4 py-10 sm:px-6 lg:px-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-2">

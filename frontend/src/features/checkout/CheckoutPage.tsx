@@ -7,9 +7,8 @@ import { Button } from '@/shared/ui/Button'
 import { Input } from '@/shared/ui/Input'
 import { Card, CardBody } from '@/shared/ui/Card'
 import { paths } from '@/app/routes/paths'
-import { formatPrice } from '@/shared/lib/format'
 import { getErrorMessage, getFieldErrors } from '@/shared/api/client'
-import { useCartStore, selectCartTotal } from '@/shared/store/cart.store'
+import { useCartStore } from '@/shared/store/cart.store'
 import { useAuthStore } from '@/shared/store/auth.store'
 import { useCreateOrder } from '@/features/orders/orderHooks'
 
@@ -26,7 +25,6 @@ export function CheckoutPage() {
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
   const items = useCartStore((s) => s.items)
-  const total = useCartStore(selectCartTotal)
   const clearCart = useCartStore((s) => s.clear)
   const createOrder = useCreateOrder()
 
@@ -165,15 +163,8 @@ export function CheckoutPage() {
                     <span className="line-clamp-1 text-fg-muted">
                       {i.name} <span className="text-fg-subtle">× {i.quantity}</span>
                     </span>
-                    <span className="shrink-0 font-medium">
-                      {formatPrice(i.price * i.quantity, t('common.currency'))}
-                    </span>
                   </div>
                 ))}
-              </div>
-              <div className="flex items-center justify-between border-t border-border pt-4 text-lg font-bold">
-                <span>{t('cart.total')}</span>
-                <span>{formatPrice(total, t('common.currency'))}</span>
               </div>
               <Button
                 type="submit"

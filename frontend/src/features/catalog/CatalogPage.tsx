@@ -15,7 +15,7 @@ import { FilterSidebar, type FilterValues } from './FilterSidebar'
 import type { ProductQuery, ProductSort } from '@/shared/api/types'
 
 const PAGE_SIZE = 12
-const SORTS: ProductSort[] = ['newest', 'price_asc', 'price_desc', 'rating', 'discount', 'name']
+const SORTS: ProductSort[] = ['newest', 'rating', 'discount', 'name']
 
 /** Parse the URL search params into a typed ProductQuery. */
 function parseParams(sp: URLSearchParams): Required<Pick<ProductQuery, 'page' | 'pageSize'>> &

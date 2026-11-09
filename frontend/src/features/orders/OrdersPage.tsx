@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/Button'
 import { Card, CardBody } from '@/shared/ui/Card'
 import { Skeleton } from '@/shared/ui/Skeleton'
 import { paths } from '@/app/routes/paths'
-import { formatDate, formatPrice } from '@/shared/lib/format'
+import { formatDate } from '@/shared/lib/format'
 import { useOrders } from './orderHooks'
 import { OrderStatusBadge } from './OrderStatusBadge'
 
@@ -92,9 +92,6 @@ export function OrdersPage() {
                       {t('orders.itemsCount', {
                         count: order.items.reduce((s, i) => s + i.quantity, 0),
                       })}
-                    </span>
-                    <span className="text-lg font-bold">
-                      {formatPrice(order.totalAmount, t('common.currency'))}
                     </span>
                   </div>
                 </CardBody>

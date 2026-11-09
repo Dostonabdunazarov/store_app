@@ -8,7 +8,6 @@ import { Card } from '@/shared/ui/Card'
 import { ProductImage } from '@/shared/ui/ProductImage'
 import { ProductCardSkeleton } from '@/features/catalog/ProductCardSkeleton'
 import { paths } from '@/app/routes/paths'
-import { formatPrice } from '@/shared/lib/format'
 import { useAuthStore } from '@/shared/store/auth.store'
 import { useLocalFavorites } from '@/shared/store/favorites.local'
 import { useCartStore } from '@/shared/store/cart.store'
@@ -112,9 +111,7 @@ export function FavoritesPage() {
                   {fav.name}
                 </Link>
                 <div className="mt-auto flex items-center justify-between gap-2 pt-2">
-                  <span className="text-lg font-bold text-fg">
-                    {formatPrice(fav.price, t('common.currency'))}
-                  </span>
+                  <span />
                   <button
                     type="button"
                     onClick={() =>

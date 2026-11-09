@@ -8,8 +8,7 @@ import { Card, CardBody } from '@/shared/ui/Card'
 import { ProductImage } from '@/shared/ui/ProductImage'
 import { QuantityStepper } from '@/shared/ui/QuantityStepper'
 import { paths } from '@/app/routes/paths'
-import { formatPrice } from '@/shared/lib/format'
-import { useCartStore, selectCartTotal } from '@/shared/store/cart.store'
+import { useCartStore } from '@/shared/store/cart.store'
 
 export function CartPage() {
   const { t } = useTranslation()
@@ -17,7 +16,6 @@ export function CartPage() {
   const setQuantity = useCartStore((s) => s.setQuantity)
   const remove = useCartStore((s) => s.remove)
   const clear = useCartStore((s) => s.clear)
-  const total = useCartStore(selectCartTotal)
 
   if (items.length === 0) {
     return (
@@ -75,10 +73,6 @@ export function CartPage() {
                     >
                       {item.name}
                     </Link>
-                    <span className="text-sm text-fg-muted">
-                      {formatPrice(item.price, t('common.currency'))}
-                    </span>
-
                     <div className="mt-auto flex items-center justify-between gap-2">
                       <QuantityStepper
                         value={item.quantity}
@@ -95,10 +89,6 @@ export function CartPage() {
                       </button>
                     </div>
                   </div>
-
-                  <div className="hidden shrink-0 self-center text-right font-bold sm:block">
-                    {formatPrice(item.price * item.quantity, t('common.currency'))}
-                  </div>
                 </CardBody>
               </Card>
             </motion.div>
@@ -111,16 +101,8 @@ export function CartPage() {
             <CardBody className="flex flex-col gap-4">
               <h2 className="font-semibold">{t('cart.summary')}</h2>
               <div className="flex items-center justify-between text-sm text-fg-muted">
-                <span>{t('cart.subtotal')}</span>
-                <span>{formatPrice(total, t('common.currency'))}</span>
-              </div>
-              <div className="flex items-center justify-between text-sm text-fg-muted">
                 <span>{t('cart.delivery')}</span>
                 <span>{t('cart.deliveryFree')}</span>
-              </div>
-              <div className="flex items-center justify-between border-t border-border pt-4 text-lg font-bold">
-                <span>{t('cart.total')}</span>
-                <span>{formatPrice(total, t('common.currency'))}</span>
               </div>
               <Link to={paths.checkout} className="block">
                 <Button size="lg" className="w-full">

@@ -9,7 +9,6 @@ import { Skeleton } from '@/shared/ui/Skeleton'
 import { StarRating } from '@/shared/ui/StarRating'
 import { QuantityStepper } from '@/shared/ui/QuantityStepper'
 import { paths } from '@/app/routes/paths'
-import { formatPrice } from '@/shared/lib/format'
 import { useCartStore } from '@/shared/store/cart.store'
 import { FavoriteButton } from '@/features/favorites/FavoriteButton'
 import { CompareButton } from '@/features/compare/CompareButton'
@@ -108,18 +107,6 @@ export function ProductDetailPage() {
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
-            <span
-              className={
-                product.discountPercent > 0 ? 'text-3xl font-bold text-danger' : 'text-3xl font-bold'
-              }
-            >
-              {formatPrice(product.price, t('common.currency'))}
-            </span>
-            {product.oldPrice != null && (
-              <span className="text-lg font-medium text-fg-subtle line-through">
-                {formatPrice(product.oldPrice, t('common.currency'))}
-              </span>
-            )}
             {product.discountPercent > 0 && (
               <Badge tone="success">−{product.discountPercent}%</Badge>
             )}

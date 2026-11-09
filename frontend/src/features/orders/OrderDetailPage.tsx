@@ -8,7 +8,7 @@ import { Card, CardBody } from '@/shared/ui/Card'
 import { Skeleton } from '@/shared/ui/Skeleton'
 import { ProductImage } from '@/shared/ui/ProductImage'
 import { paths } from '@/app/routes/paths'
-import { formatDate, formatPrice } from '@/shared/lib/format'
+import { formatDate } from '@/shared/lib/format'
 import { useOrder } from './orderHooks'
 import { OrderStatusBadge } from './OrderStatusBadge'
 
@@ -109,12 +109,9 @@ export function OrderDetailPage() {
                 <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
                   <span className="line-clamp-2 text-sm font-semibold">{item.productName}</span>
                   <span className="text-sm text-fg-subtle">
-                    {formatPrice(item.unitPrice, t('common.currency'))} × {item.quantity}
+                    × {item.quantity}
                   </span>
                 </div>
-                <span className="self-center font-bold">
-                  {formatPrice(item.lineTotal, t('common.currency'))}
-                </span>
               </CardBody>
             </Card>
           ))}
@@ -135,13 +132,6 @@ export function OrderDetailPage() {
                   <span className="mt-1 border-t border-border pt-2 italic">{order.comment}</span>
                 )}
               </div>
-            </CardBody>
-          </Card>
-
-          <Card>
-            <CardBody className="flex items-center justify-between text-lg font-bold">
-              <span>{t('cart.total')}</span>
-              <span>{formatPrice(order.totalAmount, t('common.currency'))}</span>
             </CardBody>
           </Card>
 

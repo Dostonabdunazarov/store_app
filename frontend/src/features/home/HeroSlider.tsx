@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from 'motion/react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/shared/ui/Button'
 import { ProductImage } from '@/shared/ui/ProductImage'
-import { formatPrice } from '@/shared/lib/format'
 
 export interface HeroSlide {
   id: string
@@ -95,7 +94,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
             )}
             <div className="absolute inset-0 bg-linear-to-r from-black/85 via-black/55 to-black/20" />
 
-            <div className="relative z-10 mx-auto grid h-full w-full max-w-7xl grid-cols-1 items-center gap-4 px-4 py-6 sm:grid-cols-2 sm:px-6 sm:py-10 lg:px-8">
+            <div className="relative z-10 mx-auto grid h-full w-full max-w-[max(80rem,70%)] grid-cols-1 items-center gap-4 px-4 py-6 sm:grid-cols-2 sm:px-6 sm:py-10 lg:px-8">
               {/* Copy */}
               <div className="flex flex-col items-start gap-3 text-white sm:gap-4">
                 {slide.discountPercent > 0 ? (
@@ -110,16 +109,6 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                 <h2 className="line-clamp-3 text-2xl font-extrabold leading-tight tracking-tight drop-shadow-sm sm:text-4xl lg:text-5xl">
                   {slide.name}
                 </h2>
-                <div className="flex items-baseline gap-3">
-                  <span className="text-2xl font-bold sm:text-3xl">
-                    {formatPrice(slide.price, t('common.currency'))}
-                  </span>
-                  {slide.oldPrice != null && (
-                    <span className="text-base font-medium text-white/60 line-through sm:text-lg">
-                      {formatPrice(slide.oldPrice, t('common.currency'))}
-                    </span>
-                  )}
-                </div>
                 <Button className="mt-1">{t('home.shopNow')} →</Button>
               </div>
 

@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/shared/ui/Button'
-import { Input } from '@/shared/ui/Input'
 import { useCategories, useBrands } from './hooks'
 import { cn } from '@/shared/lib/cn'
 
@@ -89,30 +88,6 @@ export function FilterSidebar({ values, onChange, onClear, className }: FilterSi
           {brands?.map((b) =>
             radioRow(b.slug, b.name, values.brand === b.slug, () => onChange({ brand: b.slug })),
           )}
-        </div>
-      </Section>
-
-      <Section title={t('catalog.price')}>
-        <div className="flex items-center gap-2">
-          <Input
-            type="number"
-            min={0}
-            placeholder={t('catalog.priceFrom')}
-            value={values.minPrice ?? ''}
-            onChange={(e) =>
-              onChange({ minPrice: e.target.value ? Number(e.target.value) : undefined })
-            }
-          />
-          <span className="text-fg-subtle">—</span>
-          <Input
-            type="number"
-            min={0}
-            placeholder={t('catalog.priceTo')}
-            value={values.maxPrice ?? ''}
-            onChange={(e) =>
-              onChange({ maxPrice: e.target.value ? Number(e.target.value) : undefined })
-            }
-          />
         </div>
       </Section>
 

@@ -7,7 +7,7 @@ import { cn } from '@/shared/lib/cn'
 export function Container({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cn('mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8', className)}
+      className={cn('mx-auto w-full max-w-[max(80rem,70%)] px-4 sm:px-6 lg:px-8', className)}
       {...props}
     />
   )
