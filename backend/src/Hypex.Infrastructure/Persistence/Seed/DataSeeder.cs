@@ -258,10 +258,12 @@ public class DataSeeder(
 
     private async Task SeedProductsAsync(CancellationToken ct)
     {
-        if (await db.Products.AnyAsync(ct))
+        var existing = (await db.Products.Select(p => p.Slug).ToListAsync(ct)).ToHashSet();
+        var missing = SeedCatalog.Products.Where(p => !existing.Contains(p.Slug)).ToList();
+        if (missing.Count == 0)
             return;
 
-        foreach (var p in SeedCatalog.Products)
+        foreach (var p in missing)
         {
             var product = new Product
             {
@@ -304,6 +306,6 @@ public class DataSeeder(
         }
 
         await db.SaveChangesAsync(ct);
-        logger.LogInformation("Seeded {Count} products", SeedCatalog.Products.Count);
+        logger.LogInformation("Seeded {Count} products", missing.Count);
     }
 }

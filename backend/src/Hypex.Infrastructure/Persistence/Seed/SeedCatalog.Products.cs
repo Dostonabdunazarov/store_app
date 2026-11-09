@@ -788,5 +788,5 @@ internal static partial class SeedCatalog
                 new("color", new("Цвет", "Rang", "Color"), new("Чёрный", "Qora", "Black")),
             },
             4.2, 87),
-    };
+    }.Concat(Products2026()).ToList();
 }
