@@ -9,7 +9,7 @@
 Браузер → Cloudflare (HTTPS) → сервер :80 → Caddy → store-frontend / store-backend
 ```
 
-Caddy для `store.hypex.site`: `/api/*` → `store-backend:8080`, остальное → `store-frontend:80`.
+Caddy для `store.hypex.site`: `/api/*` → `store-backend:8080`, остальное → `store-frontend:8080`.
 Фронт обращается к API по относительному `/api`, поэтому отдельный origin/URL не нужен.
 
 ## Состав
@@ -37,6 +37,8 @@ Caddy для `store.hypex.site`: `/api/*` → `store-backend:8080`, осталь
    POSTGRES_DB=hypex
    POSTGRES_PASSWORD=<сгенерировать: openssl rand -base64 48>
    JWT_KEY=<сгенерировать: openssl rand -base64 48>
+   SEED_ADMIN_EMAIL=<email администратора>
+   SEED_ADMIN_PASSWORD=<сгенерировать: openssl rand -base64 24>
    CORS_ALLOWED_ORIGIN=https://store.hypex.site
    EOF
    ```
@@ -86,4 +88,4 @@ EF Core миграции и seed (категории/бренды/товары +
 **автоматически при старте** backend (`DataSeeder.SeedAsync` в `Program.cs`).
 Отдельного шага не требуется. Данные Postgres — в volume `hypex-pgdata`.
 
-Админ по умолчанию: `admin@hypex.local` / `Admin123!` — **смените в проде**.
+Админ создаётся из переменных окружения `Seed__AdminEmail` / `Seed__AdminPassword` (`SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` в `.env`). В Production пароль обязателен (минимум 12 символов), иначе backend не стартует. Существующий пользователь не перезаписывается — пароль уже созданного админа меняется через `POST /api/auth/change-password`.

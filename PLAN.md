@@ -128,7 +128,7 @@ EF-модель + миграции + seed (реальные товары тех�
 
 **Проверено (E2E, API на :5080):** миграция применена; seed отработал (admin + 5 cat + 12 brands + 32 products); каталог — пагинация (32 товара/16 стр.), фильтры (phones=8, price 100–300=7, inStock=29/32), поиск (`macbook`+apple=2), сортировка, локализация RU/UZ/EN названий/описаний/атрибутов, 404 на несуществующий slug; auth — register→me→refresh (ротация: старый refresh отзывается → 401), login, admin (role=1), дубль email→409, неверный пароль→401, валидация→400 с ошибками по полям.
 
-_Учётка админа для локальной разработки: `admin@hypex.local` / `Admin123!`._
+_Учётка админа для локальной разработки задаётся в секции `Seed` файла `appsettings.Development.json`._
 
 ### ✅ Фаза 2 — Backend фичи
 Favorites, Reviews/рейтинги, Orders, Admin-эндпоинты, Swagger, валидация.
@@ -219,7 +219,7 @@ _Примечание: dev-порт Vite может смещаться (5173→5
 | **Категории** | [SeedCatalog.cs](backend/src/Hypex.Infrastructure/Persistence/Seed/SeedCatalog.cs) | 5: ноутбуки, планшеты, смартфоны, гаджеты, гарнитуры (переводы RU/UZ/EN) |
 | **Бренды** | [SeedCatalog.cs](backend/src/Hypex.Infrastructure/Persistence/Seed/SeedCatalog.cs) | 12: Apple, Samsung, Xiaomi, Sony, ASUS, Lenovo, Dell, HP, Google, JBL, Logitech, Huawei |
 | **Товары** | [SeedCatalog.Products.cs](backend/src/Hypex.Infrastructure/Persistence/Seed/SeedCatalog.Products.cs) | 32 товара с переводами RU/UZ/EN, атрибутами, рейтингами и фото |
-| **Admin-пользователь** | [DataSeeder.cs](backend/src/Hypex.Infrastructure/Persistence/Seed/DataSeeder.cs) | `admin@hypex.local` / `Admin123!` |
+| **Admin-пользователь** | [DataSeeder.cs](backend/src/Hypex.Infrastructure/Persistence/Seed/DataSeeder.cs) | Email и пароль из конфигурации `Seed__AdminEmail` / `Seed__AdminPassword` |
 
 Категории и бренды используют **стабильные явные Id** (константы в `SeedCatalog.cs`), на которые ссылаются товары. `DataSeeder.SyncIdentitySequencesAsync` выравнивает Postgres-identity-sequence к `MAX(Id)` на старте (иначе admin-создание категории/бренда падало бы с `23505 duplicate key`).
 

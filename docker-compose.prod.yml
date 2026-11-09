@@ -8,7 +8,7 @@
 #
 # Публичные порты из базового compose привязаны к 127.0.0.1 — снаружи недоступны.
 # Наружу торчит только Caddy из corpdev/infra; он маршрутизирует:
-#   /api/* → store-backend:8080, всё остальное → store-frontend:80.
+#   /api/* → store-backend:8080, всё остальное → store-frontend:8080.
 services:
   postgres:
     environment:
@@ -20,6 +20,8 @@ services:
     environment:
       ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-hypex};Username=${POSTGRES_USER:-hypex};Password=${POSTGRES_PASSWORD}"
       Jwt__Key: ${JWT_KEY}
+      Seed__AdminEmail: ${SEED_ADMIN_EMAIL:-admin@hypex.local}
+      Seed__AdminPassword: ${SEED_ADMIN_PASSWORD:-}
       Jwt__Issuer: "Hypex"
       Jwt__Audience: "HypexClient"
       Cors__AllowedOrigins__0: ${CORS_ALLOWED_ORIGIN:-https://store.hypex.site}

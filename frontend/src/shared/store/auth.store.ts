@@ -3,7 +3,7 @@ import { tokenStorage } from '@/shared/api/tokenStorage'
 import { setOnAuthCleared } from '@/shared/api/client'
 import { authApi } from '@/shared/api/endpoints'
 import { UserRole } from '@/shared/api/types'
-import type { AuthResponse, LoginRequest, RegisterRequest, UserDto } from '@/shared/api/types'
+import type { AuthResponse, ChangePasswordRequest, LoginRequest, RegisterRequest, UserDto } from '@/shared/api/types'
 
 interface AuthState {
   user: UserDto | null
@@ -15,6 +15,7 @@ interface AuthState {
   login: (body: LoginRequest) => Promise<void>
   register: (body: RegisterRequest) => Promise<void>
   logout: () => void
+  changePassword: (body: ChangePasswordRequest) => Promise<void>
   /** Called once on app start: restores a session from a persisted refresh token. */
   bootstrap: () => Promise<void>
 }
@@ -51,7 +52,14 @@ export const useAuthStore = create<AuthState>((set) => {
       applyAuth(set, res)
     },
 
+    changePassword: async (body) => {
+      const res = await authApi.changePassword(body)
+      applyAuth(set, res)
+    },
+
     logout: () => {
+      const refreshToken = tokenStorage.getRefresh()
+      if (refreshToken) void authApi.logout(refreshToken).catch(() => undefined)
       tokenStorage.clear()
       set({ user: null, isAuthenticated: false, isAdmin: false })
     },

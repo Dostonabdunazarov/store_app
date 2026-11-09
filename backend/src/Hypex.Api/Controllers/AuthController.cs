@@ -27,9 +27,31 @@ public class AuthController(IAuthService auth) : ControllerBase
     public async Task<ActionResult<AuthResponse>> Refresh(RefreshRequest request, CancellationToken ct)
         => Ok(await auth.RefreshAsync(request.RefreshToken, ct));
 
+    [HttpPost("logout")]
+    [EnableRateLimiting("auth")]
+    public async Task<IActionResult> Logout(LogoutRequest request, CancellationToken ct)
+    {
+        await auth.LogoutAsync(request.RefreshToken, ct);
+        return NoContent();
+    }
+
+    [Authorize]
+    [HttpPost("change-password")]
+    [EnableRateLimiting("auth")]
+    public async Task<ActionResult<AuthResponse>> ChangePassword(ChangePasswordRequest request, CancellationToken ct)
+        => Ok(await auth.ChangePasswordAsync(CurrentUserId(), request, ct));
+
     [Authorize]
     [HttpGet("me")]
     public async Task<ActionResult<UserDto>> Me(CancellationToken ct)
+    {
+        var user = await auth.GetByIdAsync(CurrentUserId(), ct)
+            ?? throw AppException.NotFound("User not found.");
+
+        return Ok(user);
+    }
+
+    private Guid CurrentUserId()
     {
         var sub = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
                   ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -37,9 +59,6 @@ public class AuthController(IAuthService auth) : ControllerBase
         if (!Guid.TryParse(sub, out var userId))
             throw AppException.Unauthorized("Invalid token subject.");
 
-        var user = await auth.GetByIdAsync(userId, ct)
-            ?? throw AppException.NotFound("User not found.");
-
-        return Ok(user);
+        return userId;
     }
 }

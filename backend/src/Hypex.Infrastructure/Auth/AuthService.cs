@@ -52,13 +52,60 @@ public class AuthService(
             .Include(t => t.User)
             .FirstOrDefaultAsync(t => t.TokenHash == hash, ct);
 
-        if (stored is null || !stored.IsActive)
+        if (stored is null)
             throw AppException.Unauthorized("Invalid or expired refresh token.");
 
-        // Rotate: revoke the used token and issue a fresh pair.
-        stored.RevokedAt = DateTime.UtcNow;
-        var response = await IssueTokensAsync(stored.User, ct);
-        return response;
+        if (stored.RevokedAt is not null)
+        {
+            await RevokeAllAsync(stored.UserId, ct);
+            throw AppException.Unauthorized("Invalid or expired refresh token.");
+        }
+
+        if (!stored.IsActive)
+            throw AppException.Unauthorized("Invalid or expired refresh token.");
+
+        var rotated = await db.RefreshTokens
+            .Where(t => t.Id == stored.Id && t.RevokedAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, DateTime.UtcNow), ct);
+
+        if (rotated == 0)
+        {
+            await RevokeAllAsync(stored.UserId, ct);
+            throw AppException.Unauthorized("Invalid or expired refresh token.");
+        }
+
+        return await IssueTokensAsync(stored.User, ct);
+    }
+
+    public async Task LogoutAsync(string refreshToken, CancellationToken ct = default)
+    {
+        var hash = tokens.HashRefreshToken(refreshToken);
+
+        await db.RefreshTokens
+            .Where(t => t.TokenHash == hash && t.RevokedAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, DateTime.UtcNow), ct);
+    }
+
+    public async Task<AuthResponse> ChangePasswordAsync(Guid userId, ChangePasswordRequest request, CancellationToken ct = default)
+    {
+        var user = await db.Users.FirstOrDefaultAsync(u => u.Id == userId, ct)
+            ?? throw AppException.NotFound("User not found.");
+
+        if (!hasher.Verify(request.CurrentPassword, user.PasswordHash))
+            throw AppException.BadRequest("Current password is incorrect.");
+
+        user.PasswordHash = hasher.Hash(request.NewPassword);
+        await db.SaveChangesAsync(ct);
+        await RevokeAllAsync(user.Id, ct);
+
+        return await IssueTokensAsync(user, ct);
+    }
+
+    private async Task RevokeAllAsync(Guid userId, CancellationToken ct)
+    {
+        await db.RefreshTokens
+            .Where(t => t.UserId == userId && t.RevokedAt == null)
+            .ExecuteUpdateAsync(s => s.SetProperty(t => t.RevokedAt, DateTime.UtcNow), ct);
     }
 
     public async Task<UserDto?> GetByIdAsync(Guid userId, CancellationToken ct = default)

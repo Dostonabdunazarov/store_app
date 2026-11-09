@@ -7,6 +7,7 @@ import {
   GitCompareArrows,
   Heart,
   Info,
+  KeyRound,
   LayoutGrid,
   LogOut,
   Menu,
@@ -137,6 +138,17 @@ export function Navbar() {
                 )}
               </div>
 
+              <Link to={paths.changePassword}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={t('nav.changePassword')}
+                  title={t('nav.changePassword')}
+                >
+                  <KeyRound className="h-5 w-5" strokeWidth={2} />
+                </Button>
+              </Link>
+
               {/* Compact logout icon button */}
               <Button
                 variant="ghost"
@@ -181,6 +193,12 @@ export function Navbar() {
               <NavLink to={paths.admin} className={linkClass} onClick={() => setMobileOpen(false)}>
                 <Shield className="h-4.5 w-4.5" strokeWidth={2} />
                 {t('nav.admin')}
+              </NavLink>
+            )}
+            {isAuthenticated && (
+              <NavLink to={paths.changePassword} className={linkClass} onClick={() => setMobileOpen(false)}>
+                <KeyRound className="h-4.5 w-4.5" strokeWidth={2} />
+                {t('nav.changePassword')}
               </NavLink>
             )}
             <div className="flex items-center gap-2 pt-2">

@@ -8,6 +8,10 @@ public record LoginRequest(string Email, string Password);
 
 public record RefreshRequest(string RefreshToken);
 
+public record LogoutRequest(string RefreshToken);
+
+public record ChangePasswordRequest(string CurrentPassword, string NewPassword);
+
 /// <summary>Auth result returned to the client after register/login/refresh.</summary>
 public record AuthResponse(
     string AccessToken,

@@ -11,6 +11,7 @@ import { CartPage } from '@/features/cart/CartPage'
 import { FavoritesPage } from '@/features/favorites/FavoritesPage'
 import { ComparePage } from '@/features/compare/ComparePage'
 import { CheckoutPage } from '@/features/checkout/CheckoutPage'
+import { ChangePasswordPage } from '@/features/auth/ChangePasswordPage'
 import { OrdersPage } from '@/features/orders/OrdersPage'
 import { OrderDetailPage } from '@/features/orders/OrderDetailPage'
 import { NotFoundPage } from '@/features/misc/NotFoundPage'
@@ -45,6 +46,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           { path: paths.checkout, element: <CheckoutPage /> },
+          { path: paths.changePassword, element: <ChangePasswordPage /> },
           { path: paths.orders, element: <OrdersPage /> },
           { path: paths.order(), element: <OrderDetailPage /> },
         ],

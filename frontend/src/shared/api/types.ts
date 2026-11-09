@@ -24,6 +24,11 @@ export interface UserDto {
   role: UserRole
 }
 
+export interface ChangePasswordRequest {
+  currentPassword: string
+  newPassword: string
+}
+
 export interface AuthResponse {
   accessToken: string
   refreshToken: string

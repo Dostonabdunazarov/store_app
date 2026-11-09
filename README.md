@@ -63,10 +63,7 @@ Vite проксирует `/api` → `http://localhost:5080`, так что фр
 
 ## 🔑 Учётные данные администратора (dev)
 
-```
-Email:    admin@hypex.local
-Пароль:   Admin123!
-```
+В режиме Development админ создаётся из секции `Seed` файла `backend/src/Hypex.Api/appsettings.Development.json` (`Seed:AdminEmail`, `Seed:AdminPassword`). В Production значения берутся только из переменных окружения `Seed__AdminEmail` / `Seed__AdminPassword` (пароль — минимум 12 символов), иначе приложение не запустится.
 
 Раздел админки доступен в шапке после входа под этой учёткой (`/admin`).
 
@@ -126,4 +123,4 @@ store_app/
 
 - Оплата — только при получении (без онлайн-платежей).
 - Фото товаров — по URL / seed (без облачного хранилища).
-- JWT-ключ и пароль БД в `appsettings.json` / `.env` — **dev-значения**, замените для продакшена.
+- JWT-ключ (`appsettings.Development.json`) и пароль БД (`.env`) — **dev-значения**; в Production `Jwt__Key` обязателен (минимум 32 байта, не dev-значение), иначе приложение не запустится.

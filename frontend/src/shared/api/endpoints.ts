@@ -4,6 +4,7 @@ import type {
   AuthResponse,
   BrandDto,
   BrandUpsertRequest,
+  ChangePasswordRequest,
   CategoryDto,
   CategoryUpsertRequest,
   CreateOrderRequest,
@@ -29,6 +30,10 @@ export const authApi = {
   login: (body: LoginRequest) =>
     api.post<AuthResponse>('/auth/login', body).then((r) => r.data),
   me: () => api.get<UserDto>('/auth/me').then((r) => r.data),
+  logout: (refreshToken: string) =>
+    api.post('/auth/logout', { refreshToken }).then(() => undefined),
+  changePassword: (body: ChangePasswordRequest) =>
+    api.post<AuthResponse>('/auth/change-password', body).then((r) => r.data),
   // refresh is handled inside the client interceptor.
 }
 

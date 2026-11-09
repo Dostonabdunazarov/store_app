@@ -8,6 +8,7 @@ export const paths = {
   compare: '/compare',
   cart: '/cart',
   checkout: '/checkout',
+  changePassword: '/account/password',
   orders: '/orders',
   order: (id = ':id') => `/orders/${id}`,
   login: '/login',

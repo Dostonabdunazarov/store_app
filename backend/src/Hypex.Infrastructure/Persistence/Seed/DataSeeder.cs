@@ -3,6 +3,7 @@ using Hypex.Domain.Common;
 using Hypex.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Hypex.Infrastructure.Persistence.Seed;
 
@@ -14,6 +15,7 @@ namespace Hypex.Infrastructure.Persistence.Seed;
 public class DataSeeder(
     HypexDbContext db,
     IPasswordHasher hasher,
+    IOptions<SeedOptions> seedOptions,
     ILogger<DataSeeder> logger)
 {
     public async Task SeedAsync(CancellationToken ct = default)
@@ -181,15 +183,39 @@ public class DataSeeder(
 
     private async Task SeedAdminAsync(CancellationToken ct)
     {
-        const string adminEmail = "admin@hypex.local";
+        var options = seedOptions.Value;
+        var adminEmail = options.AdminEmail?.Trim().ToLowerInvariant();
+        var adminPassword = options.AdminPassword;
+
+        if (string.IsNullOrEmpty(adminEmail))
+        {
+            if (options.RequireStrongAdminPassword)
+                throw new InvalidOperationException("Seed:AdminEmail is not configured.");
+            logger.LogWarning("Seed:AdminEmail is not configured; admin user was not seeded");
+            return;
+        }
+
         if (await db.Users.AnyAsync(u => u.Email == adminEmail, ct))
             return;
+
+        if (string.IsNullOrEmpty(adminPassword))
+        {
+            if (options.RequireStrongAdminPassword)
+                throw new InvalidOperationException(
+                    $"Seed:AdminPassword is not configured. Set the Seed__AdminPassword environment variable (at least {SeedOptions.MinAdminPasswordLength} characters) to create the admin user.");
+            logger.LogWarning("Seed:AdminPassword is not configured; admin user was not seeded");
+            return;
+        }
+
+        if (options.RequireStrongAdminPassword && adminPassword.Length < SeedOptions.MinAdminPasswordLength)
+            throw new InvalidOperationException(
+                $"Seed:AdminPassword must be at least {SeedOptions.MinAdminPasswordLength} characters long.");
 
         db.Users.Add(new User
         {
             Email = adminEmail,
             FullName = "Hypex Admin",
-            PasswordHash = hasher.Hash("Admin123!"),
+            PasswordHash = hasher.Hash(adminPassword),
             Role = UserRole.Admin,
         });
         await db.SaveChangesAsync(ct);
