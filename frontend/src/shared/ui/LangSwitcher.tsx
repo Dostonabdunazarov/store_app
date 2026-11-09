@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, ChevronDown } from 'lucide-react'
-import { SUPPORTED_LANGS, LANG_LABELS, type Lang } from '@/shared/lib/i18n'
+import { Check, Languages } from 'lucide-react'
+import { SUPPORTED_LANGS, type Lang } from '@/shared/lib/i18n'
 import { FlagIcon } from './FlagIcon'
 import { cn } from '@/shared/lib/cn'
 
@@ -47,17 +47,16 @@ export function LangSwitcher({ onChange }: { onChange?: (lang: Lang) => void }) 
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-surface px-2.5 py-1.5 text-xs font-semibold text-fg-muted transition-colors hover:text-fg"
+        className={cn(
+          'inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-surface-2 hover:text-fg',
+          open ? 'bg-surface-2 text-fg' : 'text-fg-muted',
+        )}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label="Language"
+        aria-label={LANG_NAMES[active]}
+        title={LANG_NAMES[active]}
       >
-        <FlagIcon lang={active} className="h-3.5 w-5 rounded-[2px]" />
-        <span>{LANG_LABELS[active]}</span>
-        <ChevronDown
-          className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')}
-          strokeWidth={2.5}
-        />
+        <Languages className="h-5 w-5" strokeWidth={2} />
       </button>
 
       {open && (

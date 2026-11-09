@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from '@tanstack/react-query'
@@ -9,6 +9,7 @@ import {
   Info,
   KeyRound,
   LayoutGrid,
+  LogIn,
   LogOut,
   Menu,
   Package,
@@ -42,6 +43,21 @@ export function Navbar() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
+  const [hidden, setHidden] = useState(false)
+
+  useEffect(() => {
+    let last = window.scrollY
+    const onScroll = () => {
+      const y = window.scrollY
+      setScrolled(y > 24)
+      setHidden(y > 240 && y > last)
+      last = y
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const isAdmin = useAuthStore((s) => s.isAdmin)
@@ -89,8 +105,14 @@ export function Navbar() {
   )
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-4 sm:pt-4">
-      <div className="glass-strong relative mx-auto flex h-16 w-full max-w-[max(80rem,70%)] items-center gap-4 rounded-2xl border px-4 shadow-elevated sm:px-6 lg:px-8">
+    <header
+      className={cn(
+        'sticky top-0 z-40 border-b transition-[transform,background-color,border-color] duration-500',
+        scrolled || mobileOpen ? 'glass-strong border-border' : 'border-transparent',
+        hidden && !mobileOpen && '-translate-y-full',
+      )}
+    >
+      <div className="relative mx-auto flex h-16 w-full max-w-[max(80rem,70%)] items-center gap-4 px-4 sm:px-6 lg:px-8">
         <Link to={paths.home} className="flex shrink-0 items-center gap-2 font-bold tracking-tight">
           <img src="/favicon.svg" alt="" aria-hidden className="h-7 w-auto shrink-0" />
           <span className="bg-linear-to-r from-teal-500 to-emerald-700 bg-clip-text text-xl text-transparent">
@@ -162,7 +184,9 @@ export function Navbar() {
             </div>
           ) : (
             <Link to={paths.login} className="hidden sm:block">
-              <Button size="sm">{t('nav.login')}</Button>
+              <Button variant="ghost" size="icon" aria-label={t('nav.login')} title={t('nav.login')}>
+                <LogIn className="h-5 w-5" strokeWidth={2} />
+              </Button>
             </Link>
           )}
 
@@ -186,7 +210,7 @@ export function Navbar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="glass-strong mx-auto mt-2 w-full max-w-[max(80rem,70%)] rounded-2xl border shadow-elevated md:hidden">
+        <div className="mx-auto w-full max-w-[max(80rem,70%)] border-t border-border md:hidden">
           <nav className="flex w-full flex-col gap-4 px-4 py-4">
             {navLinks}
             {isAdmin && (
