@@ -32,6 +32,8 @@ export const en: Translation = {
     searchPlaceholder: 'Search products…',
     searchNoResults: 'Nothing found',
     searchViewAll: 'View all results',
+    new: 'New',
+    deals: "Deals",
   },
   theme: {
     toggle: 'Toggle theme',
@@ -94,6 +96,14 @@ export const en: Translation = {
     payOnDeliveryDesc: 'No prepayment',
     warranty: 'Warranty',
     warrantyDesc: 'Official warranty',
+    hero: {
+      s1: { a: "Technology", b: "in a new light", text: "Genuine Apple, Samsung and Xiaomi devices —\nwith an official warranty and fast delivery.", cta: "Explore catalog" },
+      s2: { a: "The Apple", b: "ecosystem", text: "iPhone, MacBook and AirPods —\neverything works together.", cta: "Shop Apple" },
+      s3: { a: "Laptops", b: "for big ideas", text: "MacBook, ASUS, Lenovo and more —\nfrom studying to professional work.", cta: "All laptops" },
+      s4: { a: "Build your", b: "perfect setup", text: "Headphones, gadgets and accessories —\nfor work, study and play.", cta: "Shop gadgets" },
+      all: "Full catalog",
+      support: "24/7 Support",
+    },
   },
   catalog: {
     title: 'Catalog',

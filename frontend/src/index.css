@@ -45,75 +45,39 @@
   --radius-2xl: 1.5rem;
 
   /* Typography */
-  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: 'Space Grotesk', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Onest Variable', 'Onest', 'Helvetica Neue', Arial, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Onest Variable', 'Helvetica Neue', ui-sans-serif, system-ui, sans-serif;
 
   /* Shadows */
-  --shadow-card: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.08);
-  --shadow-elevated: 0 10px 30px -12px rgb(0 0 0 / 0.25);
+  --shadow-card: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 8px 24px -16px rgb(0 0 0 / 0.6);
+  --shadow-elevated: 0 24px 60px -20px rgb(0 0 0 / 0.8);
 }
 
 /* Light theme (default) */
 :root,
-[data-theme='light'] {
-  --bg: #f8fafc;
-  --surface: #ffffff;
-  --surface-2: #f1f5f9;
-  --border: #e2e8f0;
-  --fg: #0f172a;
-  --fg-muted: #475569;
-  --fg-subtle: #94a3b8;
-  /* Accent — deep emerald #004741 (buttons, links, active states, icon tints) */
-  --primary: #004741;
-  --primary-fg: #ffffff;
-  --primary-hover: #00332f;
-  --success: #16a34a;
-  --danger: #dc2626;
-  --warning: #d97706;
-
-  /* Mesh gradient — soft emerald/teal blobs matching the accent. Light variant. */
-  --bg-mesh:
-    radial-gradient(42rem 42rem at 12% -8%, rgba(0, 71, 65, 0.14), transparent 60%),
-    radial-gradient(38rem 38rem at 88% 6%, rgba(13, 148, 136, 0.12), transparent 60%),
-    radial-gradient(46rem 46rem at 78% 92%, rgba(16, 185, 129, 0.12), transparent 62%),
-    radial-gradient(34rem 34rem at 8% 88%, rgba(45, 212, 191, 0.1), transparent 60%);
-  /* Glass surfaces (translucent so the mesh shows through under backdrop-blur). */
-  --glass: rgba(255, 255, 255, 0.6);
-  --glass-strong: rgba(255, 255, 255, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.5);
-}
-
-/* Dark theme — neutral charcoal base (#1D1D1D) */
+[data-theme='light'],
 [data-theme='dark'] {
-  --bg: #1d1d1d;
-  --surface: #262626;
-  --surface-2: #303030;
-  --border: #3a3a3a;
-  --fg: #f4f4f5;
-  --fg-muted: #c4c4c8;
-  --fg-subtle: #8a8a90;
-  --primary: #818cf8;
-  --primary-fg: #17171a;
-  --primary-hover: #a5b4fc;
-  --success: #34d399;
-  --danger: #fb7185;
+  --bg: #000000;
+  --surface: #0f0f11;
+  --surface-2: #18181b;
+  --border: rgba(255, 255, 255, 0.1);
+  --fg: #f5f5f7;
+  --fg-muted: #a1a1aa;
+  --fg-subtle: #71717a;
+  --primary: #f5f5f7;
+  --primary-fg: #000000;
+  --primary-hover: #d4d4d8;
+  --success: #4ade80;
+  --danger: #f87171;
   --warning: #fbbf24;
 
-  /* Mesh gradient — subtle cool blobs over the charcoal base. */
-  --bg-mesh:
-    radial-gradient(44rem 44rem at 12% -6%, rgba(99, 102, 241, 0.16), transparent 60%),
-    radial-gradient(40rem 40rem at 90% 4%, rgba(124, 58, 237, 0.14), transparent 60%),
-    radial-gradient(48rem 48rem at 82% 94%, rgba(56, 189, 248, 0.1), transparent 62%),
-    radial-gradient(36rem 36rem at 6% 90%, rgba(148, 163, 184, 0.08), transparent 60%);
-  /* Glass surfaces — cards lift slightly above the base; the navbar/footer
-   * (glass-strong) match the base #1D1D1D so header/footer read as one surface. */
-  --glass: rgba(38, 38, 38, 0.55);
-  --glass-strong: rgba(29, 29, 29, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass: rgba(255, 255, 255, 0.04);
+  --glass-strong: rgba(8, 8, 10, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.1);
 }
 
 html {
-  color-scheme: light dark;
+  color-scheme: dark;
 }
 
 body {
@@ -122,6 +86,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-fg);
   font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'cv11';
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -135,8 +100,6 @@ body::before {
   inset: 0;
   z-index: -1;
   background-color: var(--color-bg);
-  background-image: var(--bg-mesh);
-  background-repeat: no-repeat;
 }
 
 /* Headings use the display face for a more distinctive, modern look. */
@@ -144,7 +107,35 @@ h1,
 h2,
 h3 {
   font-family: var(--font-display);
+  font-weight: 400;
   letter-spacing: -0.02em;
+}
+
+.hero-title {
+  font-family: 'Unbounded', 'Onest Variable', 'Helvetica Neue', Arial, sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.045em;
+}
+
+.hero-accent {
+  font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.22em;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #c8c8d0;
+}
+
+.product-stage {
+  background: radial-gradient(120% 90% at 50% 35%, #232329 0%, #121215 55%, #0b0b0d 100%);
+}
+
+.text-shine {
+  background-image: linear-gradient(90deg, #8e8e96 0%, #e4e4e7 45%, #8e8e96 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Glass surfaces — translucent + blurred so the page photo shows through.
@@ -177,4 +168,8 @@ h3 {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+.hero-text-shadow {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 4px 28px rgba(0, 0, 0, 0.55);
 }

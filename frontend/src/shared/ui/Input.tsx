@@ -32,9 +32,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             id={inputId}
             aria-invalid={!!error}
             className={cn(
-              'h-11 w-full rounded-lg border bg-surface px-3.5 text-sm text-fg transition-colors',
+              'h-11 w-full rounded-xl border bg-white/[0.03] px-3.5 text-sm text-fg transition-colors',
               'placeholder:text-fg-subtle',
-              'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:ring-offset-bg',
+              'focus:outline-none focus:border-white/40 focus:ring-2 focus:ring-white/10',
               leftIcon ? 'pl-10' : '',
               error ? 'border-danger' : 'border-border',
               className,

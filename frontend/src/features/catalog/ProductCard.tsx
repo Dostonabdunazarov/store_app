@@ -51,10 +51,10 @@ export function ProductCard({ product }: { product: ProductListItemDto }) {
           </div>
 
           <div className="flex flex-1 flex-col gap-2 p-4">
-            <span className="text-xs font-medium uppercase tracking-wide text-fg-subtle">
+            <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-fg-subtle">
               {product.brandName}
             </span>
-            <h3 className="line-clamp-2 text-sm font-semibold text-fg transition-colors group-hover:text-primary">
+            <h3 className="line-clamp-2 text-sm font-medium text-fg/90 transition-colors group-hover:text-fg">
               {product.name}
             </h3>
 
@@ -72,7 +72,7 @@ export function ProductCard({ product }: { product: ProductListItemDto }) {
                   type="button"
                   onClick={handleAddToCart}
                   aria-label={t('product.addToCart')}
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-fg shadow-card transition-transform hover:scale-105 active:scale-95"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-fg shadow-card transition-transform hover:scale-105 active:scale-95"
                 >
                   <ShoppingCart className="h-4 w-4" strokeWidth={2} />
                 </button>

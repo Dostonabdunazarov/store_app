@@ -133,7 +133,7 @@ export function HeaderSearch({ className }: { className?: string }) {
             placeholder={t('nav.searchPlaceholder')}
             aria-label={t('common.search')}
             autoComplete="off"
-            className="h-12 w-full rounded-xl border border-border bg-surface pl-11 pr-10 text-base text-fg transition-colors placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 focus:ring-offset-bg [&::-webkit-search-cancel-button]:appearance-none"
+            className="h-12 w-full rounded-full border border-white/15 bg-white/[0.04] pl-11 pr-10 text-base text-fg transition-colors placeholder:text-fg-subtle focus:border-white/40 focus:outline-none [&::-webkit-search-cancel-button]:appearance-none"
           />
           {term && (
             <button

@@ -32,6 +32,8 @@ export const uz: Translation = {
     searchPlaceholder: 'Mahsulotlarni qidirish…',
     searchNoResults: 'Hech narsa topilmadi',
     searchViewAll: 'Barcha natijalarni ko‘rish',
+    new: 'Yangiliklar',
+    deals: "Aksiyalar",
   },
   theme: {
     toggle: "Mavzuni almashtirish",
@@ -94,6 +96,14 @@ export const uz: Translation = {
     payOnDeliveryDesc: 'Oldindan to‘lovsiz',
     warranty: 'Kafolat',
     warrantyDesc: 'Rasmiy kafolat',
+    hero: {
+      s1: { a: "Texnologiyalar", b: "yangi nurda", text: "Apple, Samsung va Xiaomi original texnikasi —\nrasmiy kafolat va tez yetkazib berish bilan.", cta: "Katalogni ko‘rish" },
+      s2: { a: "Apple", b: "ekotizimi", text: "iPhone, MacBook va AirPods —\nhammasi birga ishlaydi.", cta: "Apple’ni ko‘rish" },
+      s3: { a: "Noutbuklar", b: "katta g‘oyalar uchun", text: "MacBook, ASUS, Lenovo va boshqalar —\no‘qishdan professional ishgacha.", cta: "Barcha noutbuklar" },
+      s4: { a: "Ideal", b: "setap", text: "Quloqchinlar, gadjetlar va aksessuarlar —\nish, o‘qish va o‘yinlar uchun.", cta: "Gadjetlarni ko‘rish" },
+      all: "Butun katalog",
+      support: "24/7 qo‘llab-quvvatlash",
+    },
   },
   catalog: {
     title: 'Katalog',

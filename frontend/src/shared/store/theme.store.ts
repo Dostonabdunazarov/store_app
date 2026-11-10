@@ -17,7 +17,7 @@ function apply(theme: Theme) {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      theme: 'light',
+      theme: 'dark',
       setTheme: (theme) => {
         apply(theme)
         set({ theme })
@@ -26,9 +26,11 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: 'hypex-theme',
+      version: 2,
+      migrate: () => ({ theme: 'dark' as Theme }),
       onRehydrateStorage: () => (state) => {
         // Re-apply persisted theme to the DOM after hydration.
-        apply(state?.theme ?? 'light')
+        apply(state?.theme ?? 'dark')
       },
     },
   ),

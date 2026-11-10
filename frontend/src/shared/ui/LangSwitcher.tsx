@@ -48,21 +48,21 @@ export function LangSwitcher({ onChange }: { onChange?: (lang: Lang) => void }) 
         type="button"
         onClick={() => setOpen((v) => !v)}
         className={cn(
-          'inline-flex h-10 w-10 items-center justify-center rounded-lg transition-colors hover:bg-surface-2 hover:text-fg',
-          open ? 'bg-surface-2 text-fg' : 'text-fg-muted',
+          'inline-flex h-9 w-9 items-center justify-center rounded-full transition-colors hover:bg-white/[0.08] hover:text-fg',
+          open ? 'bg-white/[0.08] text-fg' : 'text-fg/85',
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={LANG_NAMES[active]}
         title={LANG_NAMES[active]}
       >
-        <Languages className="h-5 w-5" strokeWidth={2} />
+        <Languages className="h-4.5 w-4.5" strokeWidth={1.75} />
       </button>
 
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 z-50 mt-2 min-w-36 overflow-hidden rounded-xl border border-border bg-surface p-1 shadow-elevated"
+          className="glass-strong absolute right-0 z-50 mt-3 min-w-40 overflow-hidden rounded-2xl border p-1.5 shadow-elevated"
         >
           {SUPPORTED_LANGS.map((lang) => (
             <li key={lang}>
@@ -72,7 +72,7 @@ export function LangSwitcher({ onChange }: { onChange?: (lang: Lang) => void }) 
                 aria-selected={active === lang}
                 onClick={() => select(lang)}
                 className={cn(
-                  'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                  'flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm transition-colors',
                   active === lang
                     ? 'bg-surface-2 font-semibold text-fg'
                     : 'text-fg-muted hover:bg-surface-2 hover:text-fg',

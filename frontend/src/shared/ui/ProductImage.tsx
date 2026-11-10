@@ -18,7 +18,7 @@ export function ProductImage({ src, alt, className, draggable, eager }: ProductI
   const show = src && !failed
 
   return (
-    <div className={cn('relative overflow-hidden bg-surface-2', className)}>
+    <div className={cn('product-stage relative overflow-hidden', className)}>
       {show ? (
         <img
           src={src}

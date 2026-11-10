@@ -13,7 +13,7 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <span className="bg-linear-to-r from-teal-500 to-emerald-700 bg-clip-text text-lg font-bold text-transparent">
+            <span className="font-display text-xl font-medium uppercase tracking-[0.18em] text-fg">
               {t('common.appName')}
             </span>
             <p className="mt-2 max-w-xs text-sm text-fg-muted">{t('footer.tagline')}</p>
